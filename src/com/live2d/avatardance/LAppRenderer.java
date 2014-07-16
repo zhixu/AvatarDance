@@ -17,6 +17,7 @@ import jp.live2d.utils.android.FileManager;
 import jp.live2d.utils.android.OffscreenImage;
 import jp.live2d.utils.android.SimpleImage;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 
 
 /*
@@ -25,6 +26,8 @@ import android.opengl.GLSurfaceView;
  */
 public class LAppRenderer implements GLSurfaceView.Renderer {
 
+	private final String TAG = "RENDERER";
+	
 	private LAppLive2DManager delegate;
 
 	private SimpleImage bg;// èƒŒæ™¯ã?®æ??ç”»
@@ -44,6 +47,20 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 	@Override
 	public void onSurfaceCreated(GL10 context, EGLConfig arg1) {
 		// èƒŒæ™¯ã?®ä½œæˆ?
+		
+		/*context.glDisable(GL10.GL_DITHER);
+		
+		context.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT,
+	            GL10.GL_FASTEST);
+
+		context.glClearColor(0,0,0,0);
+		context.glEnable(GL10.GL_CULL_FACE);
+		context.glShadeModel(GL10.GL_SMOOTH);
+		context.glEnable(GL10.GL_DEPTH_TEST);*/
+		
+		context.glEnable(GL10.GL_BLEND);
+		context.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		
 		setupBackground(context);
 	}
 
@@ -167,7 +184,13 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 	 */
 	private void setupBackground(GL10 context) {
 		try {
+			
+			Log.d(TAG, "trying");
+			
 			InputStream in = FileManager.open(LAppDefine.BACK_IMAGE_NAME);
+			
+			Log.d(TAG, "input stream succeeded");
+			
 			bg=new SimpleImage(context,in);
 			// æ??ç”»ç¯„å›²ã€‚ç”»é?¢ã?®æœ€å¤§è¡¨ç¤ºç¯„å›²ã?«å?ˆã‚?ã?›ã‚‹
 			bg.setDrawRect(

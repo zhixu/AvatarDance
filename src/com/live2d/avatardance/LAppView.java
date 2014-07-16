@@ -14,6 +14,7 @@ import jp.live2d.utils.android.AccelHelper;
 import jp.live2d.utils.android.TouchManager;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -56,6 +57,9 @@ public class LAppView extends GLSurfaceView {
 		this.delegate = live2DMgr ;
 		this.renderer = new LAppRenderer( live2DMgr  ) ;
 
+		
+		setEGLConfigChooser(false);
+		//getHolder().setFormat(PixelFormat.TRANSLUCENT);
 		setRenderer(renderer);
 
 		gestureDetector = new GestureDetector(this.getContext()  , simpleOnGestureListener ) ;
@@ -84,6 +88,8 @@ public class LAppView extends GLSurfaceView {
 		touchMgr=new TouchManager();
 
 		dragMgr  = new L2DTargetPoint();
+		
+		
 	}
 
 

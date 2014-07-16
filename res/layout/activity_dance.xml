@@ -2,40 +2,52 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-
+    
+    <!-- Camera Layer -->
     <FrameLayout
-        android:id="@+id/live2DLayout"
+        android:id="@+id/camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="#ffffff"
-        >
+	    android:layout_alignParentTop="true"
+	    android:background="#880000">
+        
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_margin="10dp" >
+        <!-- Live2D Layer -->
+	    <FrameLayout
+	        android:id="@+id/live2DLayout"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentTop="true"
+	        android:background="#00000000"
+	        >
+	
+	        <LinearLayout
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="bottom"
+	            android:layout_margin="10dp" >
+	
+	            <ImageButton
+	                android:id="@+id/imageButton1"
+	                android:layout_width="0dp"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:background="@null"
+	                android:scaleType="fitCenter"
+	                android:src="@drawable/play" />
+	
+	            <FrameLayout
+	                android:layout_width="0dp"
+	                android:layout_height="match_parent"
+	                android:layout_weight="10" >
+	
+	            </FrameLayout>
+	
+	        </LinearLayout>
+	
+	    </FrameLayout>
 
-            <ImageButton
-                android:id="@+id/imageButton1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@null"
-                android:scaleType="fitCenter"
-                android:src="@drawable/play" />
-
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="10" >
-
-            </FrameLayout>
-
-        </LinearLayout>
-
-    </FrameLayout>
-
+	</FrameLayout>
 </RelativeLayout>

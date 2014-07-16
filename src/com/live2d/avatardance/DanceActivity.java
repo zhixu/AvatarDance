@@ -10,10 +10,12 @@ import com.example.avatardance.R.layout;
 import com.example.avatardance.R.menu;
 
 import android.app.Activity;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -30,6 +32,9 @@ public class DanceActivity extends Activity {
 	
 	private LAppLive2DManager live2DMgr ;
 	static private Activity instance;
+	
+	private Camera mCamera;
+	private CameraPreview mPreview;
 
 	public DanceActivity( )
 	{
@@ -47,14 +52,30 @@ public class DanceActivity extends Activity {
 	    public void onCreate(Bundle savedInstanceState)
 		{
 	        super.onCreate(savedInstanceState);
-
-	        Log.d(TAG, "path: " + LAppDefine.MODEL_HARU);
 	        
 	        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 	      	setupGUI();
 	      	FileManager.init(this.getApplicationContext());
 	    }
+	 
+	void setupCamera() {
+		
+		try {
+			Camera.open();
+			
+			
+			//mCamera = getCameraInstance();
+			
+			mPreview = new CameraPreview(this, mCamera);
+			FrameLayout cameraView = (FrameLayout) findViewById(R.id.camera);
+			cameraView.addView(mPreview);
+		} catch (Exception e) {
+			Log.d(TAG, "failed to create camera view");
+			
+		}
+	
+	}
 
 
 	void setupGUI()
@@ -65,8 +86,11 @@ public class DanceActivity extends Activity {
 
         // activity_main.xmlにLive2DのViewをレイアウトする
         FrameLayout layout=(FrameLayout) findViewById(R.id.live2DLayout);
-		layout.addView(view, 0, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		//layout.addView(view, 0, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
+        
+        
+        
 
 		// モデル切り替えボタン
 		ImageButton iBtn = (ImageButton)findViewById(R.id.imageButton1);
