@@ -1,5 +1,7 @@
 package com.live2d.avatardance;
 
+import java.io.IOException;
+
 import com.live2d.avatardance.LAppLive2DManager;
 import com.live2d.avatardance.LAppView;
 import jp.live2d.utils.android.FileManager;
@@ -27,7 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 
-public class DanceActivity extends Activity {
+public class DanceActivity extends Activity implements SurfaceTexture.OnFrameAvailableListener {
 
 	static private final String TAG = "DANCE ACTIVITY";
 	
@@ -62,9 +64,27 @@ public class DanceActivity extends Activity {
 	    }
 	 
 	 public void startCamera(int texture) {
+		 
 		 surface = new SurfaceTexture(texture);
 		 surface.setOnFrameAvailableListener(this);
+		 live2DMgr.getView().setRendererSurface(surface);
+		 
+		 camera = Camera.open();
+		 
+		 try {
+			 camera.setPreviewTexture(surface);
+			 camera.startPreview();
+		 } catch (IOException e) {
+			 Log.e(TAG, "Could not set SurfaceTexture to camera", e);
+		 }
 	 }
+	 
+	@Override
+	public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+		
+		live2DMgr.getView().requestRender();
+		
+	}
 	 
 	public void initializeCamera() {
 		
@@ -89,13 +109,6 @@ public class DanceActivity extends Activity {
 			camera.release();
 			camera = null;
 		}
-	}
-
-
-	@Override
-	public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-		
-		
 	}
 
 	void setupGUI()
@@ -156,6 +169,9 @@ public class DanceActivity extends Activity {
 		live2DMgr.onPause() ;
     	super.onPause();
 	}
+
+
+
 
 
 

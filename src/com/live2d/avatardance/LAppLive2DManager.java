@@ -167,6 +167,10 @@ public class LAppLive2DManager
 		view.startAccel(act);
 		return view ;
 	}
+	
+	public LAppView getView() {
+		return view;
+	}
 
 
 	/*
