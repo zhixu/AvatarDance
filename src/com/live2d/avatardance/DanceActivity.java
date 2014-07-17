@@ -10,6 +10,7 @@ import com.example.avatardance.R.layout;
 import com.example.avatardance.R.menu;
 
 import android.app.Activity;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,13 +29,14 @@ import android.widget.Toast;
 
 public class DanceActivity extends Activity {
 
-	private final String TAG = "DANCE ACTIVITY";
+	static private final String TAG = "DANCE ACTIVITY";
 	
 	private LAppLive2DManager live2DMgr ;
 	static private Activity instance;
 	
-	private Camera mCamera;
-	private CameraPreview mPreview;
+	private Camera camera;
+	private CameraActivity cameraActivity;
+	private SurfaceTexture surface;
 
 	public DanceActivity( )
 	{
@@ -59,39 +61,58 @@ public class DanceActivity extends Activity {
 	      	FileManager.init(this.getApplicationContext());
 	    }
 	 
-	void setupCamera() {
+	 public void startCamera(int texture) {
+		 surface = new SurfaceTexture(texture);
+		 surface.setOnFrameAvailableListener(this);
+	 }
+	 
+	public void initializeCamera() {
 		
 		try {
-			Camera.open();
-			
-			
-			//mCamera = getCameraInstance();
-			
-			mPreview = new CameraPreview(this, mCamera);
-			FrameLayout cameraView = (FrameLayout) findViewById(R.id.camera);
-			cameraView.addView(mPreview);
+			// 1 is front of camera 0 is back
+			camera = Camera.open(0);
 		} catch (Exception e) {
-			Log.d(TAG, "failed to create camera view");
-			
+			Log.d(TAG, "Cannot create camera object");
 		}
+		
+		SurfaceView preview = (SurfaceView) findViewById(R.id.camera);
+		cameraActivity = new CameraActivity(this, preview, camera);
+		preview.getHolder().addCallback(cameraActivity);
 	
+	}
+	
+	public void closeCamera() {
+		if (camera != null) {
+			camera.stopPreview();
+			camera.setPreviewCallback(null);
+			camera.lock();
+			camera.release();
+			camera = null;
+		}
 	}
 
 
+	@Override
+	public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+		
+		
+	}
+
 	void setupGUI()
 	{
-    	setContentView(R.layout.activity_dance);
-
+		setContentView(R.layout.activity_dance);
+		
+		//setting up camera
+		initializeCamera();
+		
         LAppView view = live2DMgr.createView(this) ;
 
         // activity_main.xmlにLive2DのViewをレイアウトする
         FrameLayout layout=(FrameLayout) findViewById(R.id.live2DLayout);
-		//layout.addView(view, 0, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-
-        
-        
-        
-
+		layout.addView(view, 0, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		view.bringToFront();
+		findViewById(R.id.imageButton1).bringToFront();
+		
 		// モデル切り替えボタン
 		ImageButton iBtn = (ImageButton)findViewById(R.id.imageButton1);
 		ClickListener listener = new ClickListener();
@@ -116,8 +137,11 @@ public class DanceActivity extends Activity {
 	@Override
 	protected void onResume()
 	{
+		initializeCamera();
+		//cameraActivity.setCamera(camera);
 		//live2DMgr.onResume() ;
 		super.onResume();
+		
 	}
 
 
@@ -127,8 +151,12 @@ public class DanceActivity extends Activity {
 	@Override
 	protected void onPause()
 	{
+		
+		closeCamera();
 		live2DMgr.onPause() ;
     	super.onPause();
 	}
+
+
 
 }

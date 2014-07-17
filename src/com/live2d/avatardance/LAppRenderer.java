@@ -16,6 +16,7 @@ import jp.live2d.framework.L2DViewMatrix;
 import jp.live2d.utils.android.FileManager;
 import jp.live2d.utils.android.OffscreenImage;
 import jp.live2d.utils.android.SimpleImage;
+import android.graphics.SurfaceTexture;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
@@ -24,7 +25,7 @@ import android.util.Log;
  * LAppRendererã?¯ãƒ¢ãƒ‡ãƒ«æ??ç”»ã?¨ã€?ã??ã?®ã?Ÿã‚?ã?®OpenGLå‘½ä»¤ã‚’é›†ç´„ã?—ã?Ÿã‚¯ãƒ©ã‚¹ã?§ã?™ã€‚
  *
  */
-public class LAppRenderer implements GLSurfaceView.Renderer {
+public class LAppRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameAvailableListener {
 
 	private final String TAG = "RENDERER";
 	
@@ -58,8 +59,8 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 		context.glShadeModel(GL10.GL_SMOOTH);
 		context.glEnable(GL10.GL_DEPTH_TEST);*/
 		
-		context.glEnable(GL10.GL_BLEND);
-		context.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		//context.glEnable(GL10.GL_BLEND);
+		//context.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		
 		setupBackground(context);
 	}
@@ -185,11 +186,8 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 	private void setupBackground(GL10 context) {
 		try {
 			
-			Log.d(TAG, "trying");
-			
 			InputStream in = FileManager.open(LAppDefine.BACK_IMAGE_NAME);
 			
-			Log.d(TAG, "input stream succeeded");
 			
 			bg=new SimpleImage(context,in);
 			// æ??ç”»ç¯„å›²ã€‚ç”»é?¢ã?®æœ€å¤§è¡¨ç¤ºç¯„å›²ã?«å?ˆã‚?ã?›ã‚‹
@@ -204,5 +202,12 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+
+	@Override
+	public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+		
+		
 	}
 }
