@@ -60,7 +60,7 @@ public class LAppView extends GLSurfaceView {
 	public void setLive2DManager( LAppLive2DManager live2DMgr)
 	{
 		this.delegate = live2DMgr ;
-		this.renderer = new LAppRenderer( live2DMgr, activity ) ;
+		this.renderer = new LAppRenderer( live2DMgr ) ;
 
 		
 		setEGLConfigChooser(false);
@@ -96,10 +96,6 @@ public class LAppView extends GLSurfaceView {
 		dragMgr  = new L2DTargetPoint();
 		
 		
-	}
-	
-	public void setRendererSurface(SurfaceTexture s) {
-		renderer.setSurface(s);
 	}
 
 

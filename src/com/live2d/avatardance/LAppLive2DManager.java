@@ -13,6 +13,7 @@ import javax.microedition.khronos.opengles.GL10;
 import jp.live2d.Live2D;
 import jp.live2d.framework.L2DViewMatrix;
 import jp.live2d.framework.Live2DFramework;
+import jp.live2d.util.UtSystem;
 import android.app.Activity;
 import android.util.Log;
 
@@ -61,6 +62,10 @@ public class LAppLive2DManager
 		}
 
 		models.clear();
+	}
+	
+	public void setModelTime () {
+		UtSystem.setUserTimeMSec((long) 1);
 	}
 
 
@@ -322,7 +327,7 @@ public class LAppLive2DManager
 
 		for (int i=0; i<models.size(); i++)
 		{
-			models.get(i).startRandomMotion(LAppDefine.MOTION_GROUP_SHAKE,LAppDefine.PRIORITY_FORCE );
+			models.get(i).startRandomMotion(LAppDefine.MOTION_GROUP_DANCE,LAppDefine.PRIORITY_FORCE );
 		}
 	}
 

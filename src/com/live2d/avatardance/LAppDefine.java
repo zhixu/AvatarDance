@@ -59,11 +59,13 @@ public class LAppDefine
 	static final String MOTION_GROUP_PINCH_IN	="pinch_in";	// æ‹¡å¤§ã?—ã?Ÿæ™‚
 	static final String MOTION_GROUP_PINCH_OUT	="pinch_out";	// ç¸®å°?ã?—ã?Ÿæ™‚
 	static final String MOTION_GROUP_SHAKE		="shake";		// ã‚·ã‚§ã‚¤ã‚¯
-
+	static final String MOTION_GROUP_DANCE		="dance";
+	
 	// å¤–éƒ¨å®šç¾©ãƒ•ã‚¡ã‚¤ãƒ«(json)ã?¨å?ˆã‚?ã?›ã‚‹
 	static final String HIT_AREA_HEAD		="head";
 	static final String HIT_AREA_BODY		="body";
-
+	
+	
 	// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã?®å„ªå…ˆåº¦å®šæ•°
 	public static final int PRIORITY_NONE		= 0;
 	public static final int PRIORITY_IDLE		= 1;

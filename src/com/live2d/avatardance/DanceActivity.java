@@ -1,9 +1,12 @@
 package com.live2d.avatardance;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import com.live2d.avatardance.LAppLive2DManager;
 import com.live2d.avatardance.LAppView;
+
+import jp.live2d.motion.Live2DMotion;
 import jp.live2d.utils.android.FileManager;
 
 import com.example.avatardance.R;
@@ -12,6 +15,10 @@ import com.example.avatardance.R.layout;
 import com.example.avatardance.R.menu;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Bundle;
@@ -29,23 +36,28 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 
-public class DanceActivity extends Activity implements SurfaceTexture.OnFrameAvailableListener {
+public class DanceActivity extends Activity  {
 
 	static private final String TAG = "DANCE ACTIVITY";
 	
 	private LAppLive2DManager live2DMgr ;
 	static private Activity instance;
 	
-	private Camera camera;
-	private CameraActivity cameraActivity;
-	private SurfaceTexture surface;
+	//private Camera camera;
+	//private CameraActivity cameraActivity;
+	//private SurfaceTexture surface;
+	
+	private Live2DMotion motion;
+	
+	private float currentSongBPM = -1;
+	
+	BroadcastReceiver mReceiver;
 
 	public DanceActivity( )
 	{
 		instance=this;
 		live2DMgr = new LAppLive2DManager() ;
 		}
-
 
 	 static public void exit()
     {
@@ -56,67 +68,50 @@ public class DanceActivity extends Activity implements SurfaceTexture.OnFrameAva
 	    public void onCreate(Bundle savedInstanceState)
 		{
 	        super.onCreate(savedInstanceState);
-	        
 	        requestWindowFeature(Window.FEATURE_NO_TITLE);
+	        
+	        mReceiver = new BroadcastReceiver() {
 
+				@Override
+				public void onReceive(Context context, Intent intent) {
+					String artist = intent.getStringExtra("artist");
+					String title = intent.getStringExtra("track");
+					Log.d(TAG, "artist: " + artist + " title: " + title);
+					getBPM(title, artist);
+				}
+	        };
+
+	        IntentFilter iF = new IntentFilter();
+	        
+	        // stock music player
+	        iF.addAction("com.android.music.metachanged");
+	 
+	        // MIUI music player
+	        iF.addAction("com.miui.player.metachanged");
+	 
+	        // HTC music player
+	        iF.addAction("com.htc.music.metachanged");
+	 
+	        // WinAmp
+	        iF.addAction("com.nullsoft.winamp.metachanged");
+	 
+	        // MyTouch4G
+	        iF.addAction("com.real.IMP.metachanged");
+	 
+	        registerReceiver(mReceiver, iF);
+	        
 	      	setupGUI();
 	      	FileManager.init(this.getApplicationContext());
+	      	
 	    }
-	 
-	 public void startCamera(int texture) {
-		 
-		 surface = new SurfaceTexture(texture);
-		 surface.setOnFrameAvailableListener(this);
-		 live2DMgr.getView().setRendererSurface(surface);
-		 
-		 camera = Camera.open();
-		 
-		 try {
-			 camera.setPreviewTexture(surface);
-			 camera.startPreview();
-		 } catch (IOException e) {
-			 Log.e(TAG, "Could not set SurfaceTexture to camera", e);
-		 }
-	 }
-	 
-	@Override
-	public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-		
-		live2DMgr.getView().requestRender();
-		
-	}
-	 
-	public void initializeCamera() {
-		
-		try {
-			// 1 is front of camera 0 is back
-			camera = Camera.open(0);
-		} catch (Exception e) {
-			Log.d(TAG, "Cannot create camera object");
-		}
-		
-		SurfaceView preview = (SurfaceView) findViewById(R.id.camera);
-		cameraActivity = new CameraActivity(this, preview, camera);
-		preview.getHolder().addCallback(cameraActivity);
-	
-	}
-	
-	public void closeCamera() {
-		if (camera != null) {
-			camera.stopPreview();
-			camera.setPreviewCallback(null);
-			camera.lock();
-			camera.release();
-			camera = null;
-		}
-	}
 
+	
 	void setupGUI()
 	{
 		setContentView(R.layout.activity_dance);
 		
 		//setting up camera
-		//startCamera();
+		//initializeCamera();
 		
         LAppView view = live2DMgr.createView(this) ;
 
@@ -130,6 +125,15 @@ public class DanceActivity extends Activity implements SurfaceTexture.OnFrameAva
 		ImageButton iBtn = (ImageButton)findViewById(R.id.imageButton1);
 		ClickListener listener = new ClickListener();
 		iBtn.setOnClickListener(listener);
+	}
+	
+	private void getBPM(String title, String artist) {
+		currentSongBPM = -1;
+		new SongBPMRetriever().getBPM(title, artist, this);
+	}
+	
+	public void setBPM (float _bpm) {
+		currentSongBPM = _bpm;
 	}
 
 
@@ -150,7 +154,7 @@ public class DanceActivity extends Activity implements SurfaceTexture.OnFrameAva
 	@Override
 	protected void onResume()
 	{
-		initializeCamera();
+		//initializeCamera();
 		//cameraActivity.setCamera(camera);
 		//live2DMgr.onResume() ;
 		super.onResume();
@@ -165,12 +169,16 @@ public class DanceActivity extends Activity implements SurfaceTexture.OnFrameAva
 	protected void onPause()
 	{
 		
-		closeCamera();
+		//closeCamera();
+		//unregisterReceiver(mReceiver);
 		live2DMgr.onPause() ;
     	super.onPause();
 	}
 
-
+	protected void onStop() {
+		unregisterReceiver(mReceiver);
+		super.onStop();
+	}
 
 
 
