@@ -37,6 +37,7 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 	private SimpleImage bg;// èƒŒæ™¯ã?®æ??ç”»
 	private SurfaceTexture surface;
 	private DirectVideo directVideo;
+	private int texture;
 
 	private float accelX=0;
 	private float accelY=0;
@@ -70,12 +71,20 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 		
 		//setupBackground(context);
 		
+		/*
 		float[] mtx = new float[16];
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         surface.updateTexImage();
-        surface.getTransformMatrix(mtx); 
+        surface.getTransformMatrix(mtx); */
 
-        directVideo.draw();
+        //directVideo.draw();
+		
+		texture = createTexture();
+		directVideo = new DirectVideo(texture);
+		
+		activity.startCamera(texture);
+		
+		
 	}
 
 
@@ -184,7 +193,7 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 					model.draw(gl);
 				}
 			}
-		}
+		//}
 		gl.glPopMatrix() ;
 
 			// ç”»é?¢å¤–ã‚’é»’æž ã?§è¦†ã?†å ´å?ˆã€‚
@@ -227,16 +236,6 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 		}
 	}
 	
-	static public int loadShader(int type, String shaderCode)
-    {
-        int shader = GLES20.glCreateShader(type);
-
-        GLES20.glShaderSource(shader, shaderCode);
-        GLES20.glCompileShader(shader);
-
-        return shader;
-    }
-	
 	static private int createTexture()
     {
         int[] texture = new int[1];
@@ -254,10 +253,18 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 
         return texture[0];
     }
-
-
+	
 	public void setSurface(SurfaceTexture s) {
 		surface = s;
-		
 	}
+	
+	static public int loadShader(int type, String shaderCode)
+    {
+        int shader = GLES20.glCreateShader(type);
+
+        GLES20.glShaderSource(shader, shaderCode);
+        GLES20.glCompileShader(shader);
+
+        return shader;
+    }
 }

@@ -116,7 +116,7 @@ public class DanceActivity extends Activity implements SurfaceTexture.OnFrameAva
 		setContentView(R.layout.activity_dance);
 		
 		//setting up camera
-		initializeCamera();
+		//startCamera();
 		
         LAppView view = live2DMgr.createView(this) ;
 
