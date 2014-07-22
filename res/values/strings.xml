@@ -4,5 +4,9 @@
     <string name="app_name">AvatarDance</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="player_settings">Player settings</string>
+    <string name="title_activity_playlist">Playlists</string>
+    <string name="title_activity_songlist">SonglistActivity</string>
+    <string name="title_activity_avatar">AvatarActivity</string>
 
 </resources>

@@ -223,7 +223,8 @@ public class LAppModel extends L2DBaseModel
 			if(mainMotionManager.isFinished())
 			{
 				// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã?®å†?ç”Ÿã?Œã?ªã?„å ´å?ˆã€?å¾…æ©Ÿãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã?®ä¸­ã?‹ã‚‰ãƒ©ãƒ³ãƒ€ãƒ ã?§å†?ç”Ÿã?™ã‚‹
-				startRandomMotion(LAppDefine.MOTION_GROUP_IDLE, LAppDefine.PRIORITY_IDLE);
+				//startRandomMotion(LAppDefine.MOTION_GROUP_IDLE, LAppDefine.PRIORITY_IDLE);
+				startRandomMotion(LAppDefine.MOTION_GROUP_DANCE, LAppDefine.PRIORITY_IDLE);
 			}
 
 			//-----------------------------------------------------------------

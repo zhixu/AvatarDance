@@ -29,9 +29,6 @@ public class SongBPMRetriever extends AsyncTask<String, Float, Float> {
 	
 	public void getBPM(String song, String artist, DanceActivity a) {
 		activity = a;
-		
-		Log.d(TAG, "song name: " + song + " artist: " + artist);
-		
 		this.execute(song, artist);
 	}
 	

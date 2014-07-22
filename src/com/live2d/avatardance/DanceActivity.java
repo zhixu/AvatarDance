@@ -22,6 +22,7 @@ import android.content.IntentFilter;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,12 +52,14 @@ public class DanceActivity extends Activity  {
 	
 	private float currentSongBPM = -1;
 	
+	private String modelJSON = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/miku.model.json";
+	
 	BroadcastReceiver mReceiver;
 
 	public DanceActivity( )
 	{
 		instance=this;
-		live2DMgr = new LAppLive2DManager() ;
+		live2DMgr = new LAppLive2DManager(this) ;
 		}
 
 	 static public void exit()
@@ -76,7 +79,6 @@ public class DanceActivity extends Activity  {
 				public void onReceive(Context context, Intent intent) {
 					String artist = intent.getStringExtra("artist");
 					String title = intent.getStringExtra("track");
-					Log.d(TAG, "artist: " + artist + " title: " + title);
 					getBPM(title, artist);
 				}
 	        };
@@ -118,13 +120,27 @@ public class DanceActivity extends Activity  {
         // activity_main.xmlにLive2DのViewをレイアウトする
         FrameLayout layout=(FrameLayout) findViewById(R.id.live2DLayout);
 		layout.addView(view, 0, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		view.bringToFront();
-		findViewById(R.id.imageButton1).bringToFront();
+		//view.bringToFront();
+		findViewById(R.id.controls).bringToFront();
+		
 		
 		// モデル切り替えボタン
-		ImageButton iBtn = (ImageButton)findViewById(R.id.imageButton1);
-		ClickListener listener = new ClickListener();
-		iBtn.setOnClickListener(listener);
+		//ImageButton iBtn = (ImageButton)findViewById(R.id.imageButton1);
+		//ClickListener listener = new ClickListener();
+		//iBtn.setOnClickListener(listener);
+		
+		ImageButton buttonPlay = (ImageButton) findViewById(R.id.button_play);
+		ButtonPlayListener buttonPlayListener = new ButtonPlayListener();
+		buttonPlay.setOnClickListener(buttonPlayListener);
+		
+		ImageButton buttonBack = (ImageButton) findViewById(R.id.button_back);
+		ButtonBackListener buttonBackListener = new ButtonBackListener();
+		buttonBack.setOnClickListener(buttonBackListener);
+		
+		ImageButton buttonFwd = (ImageButton) findViewById(R.id.button_forward);
+		ButtonFwdListener buttonFwdListener = new ButtonFwdListener();
+		buttonFwd.setOnClickListener(buttonFwdListener);
+		
 	}
 	
 	private void getBPM(String title, String artist) {
@@ -134,6 +150,12 @@ public class DanceActivity extends Activity  {
 	
 	public void setBPM (float _bpm) {
 		currentSongBPM = _bpm;
+		Toast.makeText(getApplicationContext(), "bpm: " + _bpm, Toast.LENGTH_SHORT).show();
+		live2DMgr.setBPM(_bpm);
+	}
+	
+	public String getModelJSON() {
+		return modelJSON;
 	}
 
 
@@ -144,6 +166,33 @@ public class DanceActivity extends Activity  {
 		public void onClick(View v) {
 			Toast.makeText(getApplicationContext(), "change model", Toast.LENGTH_SHORT).show();
 			live2DMgr.changeModel();//Live2D Event
+		}
+	}
+	
+	class ButtonPlayListener implements OnClickListener{
+
+		@Override
+		public void onClick(View v) {
+			
+			
+		}
+	}
+	
+	class ButtonBackListener implements OnClickListener{
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
+	
+	class ButtonFwdListener implements OnClickListener{
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 
@@ -180,7 +229,9 @@ public class DanceActivity extends Activity  {
 		super.onStop();
 	}
 
-
+	protected void onDestroy() {
+		super.onDestroy();
+	}
 
 
 }

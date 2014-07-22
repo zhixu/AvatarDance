@@ -34,6 +34,7 @@ public class LAppLive2DManager
 	static public final String 	TAG = "SampleLive2DManager";
 
 	private LAppView 				view;						// モデル表示用View
+	private DanceActivity 			activity;
 
 	// モデルデータ
 	private ArrayList<LAppModel>	models;
@@ -45,10 +46,12 @@ public class LAppLive2DManager
 
 
 
-	public LAppLive2DManager()
+	public LAppLive2DManager(DanceActivity act)
 	{
 		Live2D.init();
 		Live2DFramework.setPlatformManager(new PlatformManager());
+		
+		activity = act;
 
 		models = new ArrayList<LAppModel>();
 	}
@@ -64,8 +67,13 @@ public class LAppLive2DManager
 		models.clear();
 	}
 	
-	public void setModelTime () {
-		UtSystem.setUserTimeMSec((long) 1);
+	public void setBPM (float bpm) {
+		
+		float danceSec = 1/(bpm*60);
+		
+		Log.d(TAG, "dancing time: " + danceSec);
+		
+		UtSystem.setUserTimeMSec((long) danceSec);
 	}
 
 

@@ -66,7 +66,7 @@ public class LAppView extends GLSurfaceView {
 		setEGLConfigChooser(false);
 		//getHolder().setFormat(PixelFormat.TRANSLUCENT);
 		setRenderer(renderer);
-		setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+		//setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
 		gestureDetector = new GestureDetector(this.getContext()  , simpleOnGestureListener ) ;
 
