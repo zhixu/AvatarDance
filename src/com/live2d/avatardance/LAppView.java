@@ -17,6 +17,7 @@ import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLSurfaceView;
+import android.os.Environment;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -94,8 +95,6 @@ public class LAppView extends GLSurfaceView {
 		touchMgr=new TouchManager();
 
 		dragMgr  = new L2DTargetPoint();
-		
-		
 	}
 
 
@@ -105,6 +104,7 @@ public class LAppView extends GLSurfaceView {
 		accelHelper = new AccelHelper(activity) ;
 	}
 
+	
 
 	/*
 	 * タッ�?イベント。

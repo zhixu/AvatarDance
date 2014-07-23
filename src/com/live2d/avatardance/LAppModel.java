@@ -73,6 +73,8 @@ public class LAppModel extends L2DBaseModel
 	//  ãƒ‡ãƒ?ãƒƒã‚°ç”¨ã?®å½“ã?Ÿã‚Šåˆ¤å®šè¡¨ç¤ºã?®ã?Ÿã‚?ã?®ãƒ?ãƒƒãƒ•ã‚¡
 	static FloatBuffer 				debugBufferVer = null ;
 	static FloatBuffer 				debugBufferColor = null ;
+	
+	private boolean isDance = true;
 
 	static Object lock = new Object() ;
 
@@ -94,6 +96,9 @@ public class LAppModel extends L2DBaseModel
 		live2DModel.deleteTextures();
 	}
 
+	public void toggleDance() {
+		isDance = !isDance;
+	}
 
 	/*
 	 * ãƒ¢ãƒ‡ãƒ«ã‚’åˆ?æœŸåŒ–ã?™ã‚‹
@@ -131,8 +136,6 @@ public class LAppModel extends L2DBaseModel
 		}
 
 		if(LAppDefine.DEBUG_LOG)Log.d(TAG, "Load model.");
-		
-		Log.d(TAG, "model path: " + modelHomeDir+modelSetting.getModelFile());
 
 		loadModelData(modelHomeDir+modelSetting.getModelFile());
 		String[] texPaths=modelSetting.getTextureFiles();
@@ -223,8 +226,12 @@ public class LAppModel extends L2DBaseModel
 			if(mainMotionManager.isFinished())
 			{
 				// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã?®å†?ç”Ÿã?Œã?ªã?„å ´å?ˆã€?å¾…æ©Ÿãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã?®ä¸­ã?‹ã‚‰ãƒ©ãƒ³ãƒ€ãƒ ã?§å†?ç”Ÿã?™ã‚‹
-				//startRandomMotion(LAppDefine.MOTION_GROUP_IDLE, LAppDefine.PRIORITY_IDLE);
-				startRandomMotion(LAppDefine.MOTION_GROUP_DANCE, LAppDefine.PRIORITY_IDLE);
+				
+				if (isDance) {
+					startRandomMotion(LAppDefine.MOTION_GROUP_DANCE, LAppDefine.PRIORITY_IDLE);
+				} else {
+					startRandomMotion(LAppDefine.MOTION_GROUP_IDLE, LAppDefine.PRIORITY_IDLE);
+				}
 			}
 
 			//-----------------------------------------------------------------
@@ -343,6 +350,9 @@ public class LAppModel extends L2DBaseModel
 	{
 		int max=modelSetting.getMotionNum(name);
 		int no=(int)(Math.random() * max);
+		
+		Log.d(TAG, "name: " + name + " no: " + no);
+		
 		startMotion(name,no,priority);
 	}
 
@@ -357,9 +367,12 @@ public class LAppModel extends L2DBaseModel
 	public void startMotion(String name, int no,int priority)
 	{
 		String motionName=modelSetting.getMotionFile(name, no);
+		
+		Log.d(TAG, "motionName: " + motionName);
 
 		if( motionName==null || motionName.equals(""))
 		{
+			Log.d(TAG, "FAILED motionName: " + motionName);
 			if(LAppDefine.DEBUG_LOG){Log.d(TAG, "Failed to motion.");}
 			return;//
 		}

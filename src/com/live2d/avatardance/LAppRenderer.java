@@ -45,6 +45,7 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 	public void onSurfaceCreated(GL10 context, EGLConfig arg1) {
 		// 背景の作成
 		setupBackground(context);
+		delegate.loadModel(context);
 	}
 
 
@@ -134,15 +135,16 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 				gl.glPopMatrix() ;
 			}
 			// キャラの描画
-			for(int i=0;i<delegate.getModelNum();i++)
-			{
-				LAppModel model = delegate.getModel(i);
+			//for(int i=0;i<delegate.getModelNum();i++)
+			//{
+				//LAppModel model = delegate.getModel(i);
+				LAppModel model = delegate.getModel();
 				if(model.isInitialized() && ! model.isUpdating())
 				{
 					model.update();
 					model.draw(gl);
 				}
-			}
+			//}
 		}
 		gl.glPopMatrix() ;
 

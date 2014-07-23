@@ -3,14 +3,16 @@ package com.live2d.avatardance;
 import android.content.Context;
 
 public class SongItem {
-	private Context context;
     private String title;
     private String artist;
     private String filepath;
-    private String albumid;
 
-    public SongItem(Context context, String title, String artist, String filepath) {
-        this.context = context;
+    public SongItem(String title, String artist) {
+    	this.title = title;
+    	this.artist = artist;
+    }
+    
+    public SongItem(String title, String artist, String filepath) {
         this.title = title;
         this.artist = artist;
         this.filepath = filepath;

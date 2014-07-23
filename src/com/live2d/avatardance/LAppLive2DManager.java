@@ -15,19 +15,9 @@ import jp.live2d.framework.L2DViewMatrix;
 import jp.live2d.framework.Live2DFramework;
 import jp.live2d.util.UtSystem;
 import android.app.Activity;
+import android.os.Environment;
 import android.util.Log;
 
-/*
- *  LAppLive2DManagerã?¯ã€?Live2Dé–¢é€£ã?®å?¸ä»¤å¡”ã?¨ã?—ã?¦ãƒ¢ãƒ‡ãƒ«ã€?ãƒ“ãƒ¥ãƒ¼ã€?ã‚¤ãƒ™ãƒ³ãƒˆç­‰ã‚’ç®¡ç?†ã?™ã‚‹ã‚¯ãƒ©ã‚¹ï¼ˆã?®ã‚µãƒ³ãƒ—ãƒ«å®Ÿè£…ï¼‰ã?«ã?ªã‚Šã?¾ã?™ã€‚
- *
- *  å¤–éƒ¨ï¼ˆã‚²ãƒ¼ãƒ ç­‰ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³æœ¬ä½“ï¼‰ã?¨Live2Dé–¢é€£ã‚¯ãƒ©ã‚¹ã?¨ã?®é€£æ?ºã‚’ã?“ã?®ã‚¯ãƒ©ã‚¹ã?§ãƒ©ãƒƒãƒ—ã?—ã?¦ç‹¬ç«‹æ€§ã‚’é«˜ã‚?ã?¦ã?„ã?¾ã?™ã€‚
- *
- *  ãƒ“ãƒ¥ãƒ¼ï¼ˆLAppViewï¼‰ã?§ç™ºç”Ÿã?—ã?Ÿã‚¤ãƒ™ãƒ³ãƒˆã?¯ã€?ã?“ã?®ã‚¯ãƒ©ã‚¹ã?®ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç?†ç”¨ãƒ¡ã‚½ãƒƒãƒ‰ï¼ˆtapEvent()ç­‰ï¼‰ã‚’å‘¼ã?³å‡ºã?—ã?¾ã?™ã€‚
- *  ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç?†ç”¨ãƒ¡ã‚½ãƒƒãƒ‰ã?«ã?¯ã€?ã‚¤ãƒ™ãƒ³ãƒˆç™ºç”Ÿæ™‚ã?®ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã?®å??å¿œï¼ˆç‰¹å®šã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³é–‹å§‹ç­‰ï¼‰ã‚’è¨˜è¿°ã?—ã?¾ã?™ã€‚
- *
- *  ã?“ã?®ã‚µãƒ³ãƒ—ãƒ«ã?§å?–å¾—ã?—ã?¦ã?„ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆã?¯ã€?ã‚¿ãƒƒãƒ—ã€?ãƒ€ãƒ–ãƒ«ã‚¿ãƒƒãƒ—ã€?ã‚·ã‚§ã‚¤ã‚¯ã€?ãƒ‰ãƒ©ãƒƒã‚°ã€?ãƒ•ãƒªãƒƒã‚¯ã€?åŠ é€Ÿåº¦ã€?ã‚­ãƒ£ãƒ©æœ€å¤§åŒ–ãƒ»æœ€å°?åŒ–ã?§ã?™ã€‚
- *
- */
 public class LAppLive2DManager
 {
 	//  ãƒ­ã‚°ç”¨ã‚¿ã‚°
@@ -37,14 +27,15 @@ public class LAppLive2DManager
 	private DanceActivity 			activity;
 
 	// ãƒ¢ãƒ‡ãƒ«ãƒ‡ãƒ¼ã‚¿
-	private ArrayList<LAppModel>	models;
-
+	//private ArrayList<LAppModel>	models;
+	private LAppModel model;
+	
 
 	//  ãƒœã‚¿ãƒ³ã?‹ã‚‰å®Ÿè¡Œã?§ã??ã‚‹ã‚µãƒ³ãƒ—ãƒ«æ©Ÿèƒ½
-	private int 					modelCount		=-1;
-	private boolean 				reloadFlg;					//  ãƒ¢ãƒ‡ãƒ«å†?èª­ã?¿è¾¼ã?¿ã?®ãƒ•ãƒ©ã‚°
+	//private int 					modelCount		=-1;
+	//private boolean 				reloadFlg;					//  ãƒ¢ãƒ‡ãƒ«å†?èª­ã?¿è¾¼ã?¿ã?®ãƒ•ãƒ©ã‚°
 
-
+	private String modelURI = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/miku.model.json";
 
 	public LAppLive2DManager(DanceActivity act)
 	{
@@ -52,28 +43,47 @@ public class LAppLive2DManager
 		Live2DFramework.setPlatformManager(new PlatformManager());
 		
 		activity = act;
+		
+		model = new LAppModel();
+		
+		
 
-		models = new ArrayList<LAppModel>();
+		//models = new ArrayList<LAppModel>();
+	}
+	
+	public void loadModel(GL10 gl) {
+		try {
+			model.load(gl, modelURI);
+			model.feedIn();
+		} catch (Exception e) {
+				// ãƒ•ã‚¡ã‚¤ãƒ«ã?®æŒ‡å®šãƒŸã‚¹ã?‹ãƒ¡ãƒ¢ãƒªä¸?è¶³ã?Œè€ƒã?ˆã‚‰ã‚Œã‚‹ã€‚å¾©å¸°ã?‹ä¸­æ–­ã?Œå¿…è¦?
+				Log.e(TAG,"Failed to load.");
+				DanceActivity.exit();
+		}
 	}
 
 
 	public void releaseModel()
 	{
+		/*
 		for(int i=0;i<models.size();i++)
 		{
 			models.get(i).release();// ãƒ†ã‚¯ã‚¹ãƒ?ãƒ£ã?ªã?©ã‚’è§£æ”¾
 		}
 
-		models.clear();
+		models.clear();*/
+		
+		model.release();
 	}
 	
-	public void setBPM (float bpm) {
+	public void danceSetBPM (float bpm) {
 		
 		float danceSec = 1/(bpm*60);
-		
-		Log.d(TAG, "dancing time: " + danceSec);
-		
 		UtSystem.setUserTimeMSec((long) danceSec);
+	}
+	
+	public void danceResetBPM () {
+		UtSystem.setUserTimeMSec((long) 1);
 	}
 
 
@@ -90,6 +100,10 @@ public class LAppLive2DManager
 	public void update(GL10 gl)
 	{
 		view.update();
+		
+		
+		
+		/*
 		if(reloadFlg)
 		{
 			// ãƒ¢ãƒ‡ãƒ«åˆ‡ã‚Šæ›¿ã?ˆãƒœã‚¿ãƒ³ã?ŒæŠ¼ã?•ã‚Œã?Ÿæ™‚ã€?ãƒ¢ãƒ‡ãƒ«ã‚’å†?èª­ã?¿è¾¼ã?¿ã?™ã‚‹
@@ -140,7 +154,7 @@ public class LAppLive2DManager
 				Log.e(TAG,"Failed to load.");
 				DanceActivity.exit();
 			}
-		}
+		} */
 	}
 
 
@@ -150,18 +164,21 @@ public class LAppLive2DManager
 	 * @param no
 	 * @return
 	 */
-	public LAppModel getModel(int no)
+	
+	public LAppModel getModel() {
+		return model;
+	}
+	
+	/*public LAppModel getModel(int no)
 	{
 		if(no>=models.size())return null;
 		return models.get(no);
 	}
 
-
 	public int getModelNum()
 	{
 		return models.size();
-	}
-
+	}*/
 
 	//=========================================================
 	// 	ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³å?´ï¼ˆSampleApplicationï¼‰ã?‹ã‚‰å‘¼ã?°ã‚Œã‚‹å‡¦ç?†
@@ -217,12 +234,13 @@ public class LAppLive2DManager
 		if(LAppDefine.DEBUG_LOG)Log.d(TAG, "onSurfaceChanged "+width+" "+height);
 		view.setupView(width,height);
 
+		/*
 		if(getModelNum()==0)
 		{
 
 			changeModel();
 
-		}
+		}*/	
 	}
 
 
@@ -232,12 +250,31 @@ public class LAppLive2DManager
 	/*
 	 * ãƒ¢ãƒ‡ãƒ«ã?®åˆ‡ã‚Šæ›¿ã?ˆ
 	 */
-	public void changeModel()
+	/*public void changeModel()
 	{
 		reloadFlg=true;// ãƒ•ãƒ©ã‚°ã? ã?‘ç«‹ã?¦ã?¦æ¬¡å›župdateæ™‚ã?«åˆ‡ã‚Šæ›¿ã?ˆ
 		modelCount++;
-	}
+	}*/
 
+	public void danceStop() {
+		/*for (int i=0; i<models.size(); i++) {
+			models.get(i).startRandomMotion(LAppDefine.MOTION_GROUP_IDLE, LAppDefine.PRIORITY_NORMAL);
+		}*/
+		Log.d(TAG, "dance stopping");
+		
+		//model.startRandomMotion(LAppDefine.MOTION_GROUP_IDLE, LAppDefine.PRIORITY_NORMAL);
+		danceResetBPM();
+		model.toggleDance();
+	}
+	
+	public void danceStart() {
+		/*for (int i=0; i<models.size(); i++) {
+			models.get(i).startRandomMotion(LAppDefine.MOTION_GROUP_DANCE, LAppDefine.PRIORITY_NORMAL);
+		}*/
+		Log.d(TAG, "dance starting");
+		model.toggleDance();
+		//model.startRandomMotion(LAppDefine.MOTION_GROUP_DANCE, LAppDefine.PRIORITY_NORMAL);
+	}
 
 	//=========================================================
 	// 	LAppViewã?‹ã‚‰å‘¼ã?°ã‚Œã‚‹å?„ç¨®ã‚¤ãƒ™ãƒ³ãƒˆ
@@ -248,10 +285,12 @@ public class LAppLive2DManager
 	 * @param y	ã‚¿ãƒƒãƒ—ã?®åº§æ¨™ y
 	 * @return
 	 */
+	
 	public boolean tapEvent(float x,float y)
 	{
 		if(LAppDefine.DEBUG_LOG)Log.d(TAG, "tapEvent view x:"+x+" y:"+y);
 
+		/*
 		for (int i=0; i<models.size(); i++)
 		{
 			if(models.get(i).hitTest(  LAppDefine.HIT_AREA_HEAD,x, y ))
@@ -265,7 +304,7 @@ public class LAppLive2DManager
 				if(LAppDefine.DEBUG_LOG)Log.d(TAG, "Tap body.");
 				models.get(i).startRandomMotion(LAppDefine.MOTION_GROUP_TAP_BODY, LAppDefine.PRIORITY_NORMAL );
 			}
-		}
+		}*/
 		return true;
 	}
 
@@ -284,6 +323,7 @@ public class LAppLive2DManager
 	{
 		if(LAppDefine.DEBUG_LOG)Log.d(TAG, "flick x:"+x+" y:"+y);
 
+		/*
 		for (int i=0; i<models.size(); i++)
 		{
 			if(models.get(i).hitTest( LAppDefine.HIT_AREA_HEAD, x, y ))
@@ -291,7 +331,7 @@ public class LAppLive2DManager
 				if(LAppDefine.DEBUG_LOG)Log.d(TAG, "Flick head.");
 				models.get(i).startRandomMotion(LAppDefine.MOTION_GROUP_FLICK_HEAD, LAppDefine.PRIORITY_NORMAL );
 			}
-		}
+		}*/
 	}
 
 
@@ -302,10 +342,11 @@ public class LAppLive2DManager
 	{
 		if(LAppDefine.DEBUG_LOG)Log.d(TAG, "Max scale event.");
 
+		/*
 		for (int i=0; i<models.size(); i++)
 		{
 			models.get(i).startRandomMotion(LAppDefine.MOTION_GROUP_PINCH_IN,LAppDefine.PRIORITY_NORMAL );
-		}
+		}*/
 	}
 
 
@@ -315,11 +356,11 @@ public class LAppLive2DManager
 	public void minScaleEvent()
 	{
 		if(LAppDefine.DEBUG_LOG)Log.d(TAG, "Min scale event.");
-
+		/*
 		for (int i=0; i<models.size(); i++)
 		{
 			models.get(i).startRandomMotion(LAppDefine.MOTION_GROUP_PINCH_OUT,LAppDefine.PRIORITY_NORMAL );
-		}
+		}*/
 	}
 
 
@@ -332,29 +373,34 @@ public class LAppLive2DManager
 	public void shakeEvent()
 	{
 		if(LAppDefine.DEBUG_LOG)Log.d(TAG, "Shake event.");
-
+		/*
 		for (int i=0; i<models.size(); i++)
 		{
 			models.get(i).startRandomMotion(LAppDefine.MOTION_GROUP_DANCE,LAppDefine.PRIORITY_FORCE );
-		}
+		}*/
 	}
-
-
+	
 	public void setAccel(float x,float y,float z)
 	{
+		/*
 		for (int i=0; i<models.size(); i++)
 		{
 			models.get(i).setAccel(x, y, z);
-		}
+		}*/
+		
+		model.setAccel(x, y, z);
 	}
 
 
 	public void setDrag(float x,float y)
 	{
+		/*
 		for (int i=0; i<models.size(); i++)
 		{
 			models.get(i).setDrag(x, y);
 		}
+		*/
+		model.setDrag(x, y);
 	}
 
 

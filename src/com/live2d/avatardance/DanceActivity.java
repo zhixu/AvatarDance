@@ -1,7 +1,9 @@
 package com.live2d.avatardance;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Stack;
 
 import com.live2d.avatardance.LAppLive2DManager;
 import com.live2d.avatardance.LAppView;
@@ -10,19 +12,22 @@ import jp.live2d.motion.Live2DMotion;
 import jp.live2d.utils.android.FileManager;
 
 import com.example.avatardance.R;
-import com.example.avatardance.R.id;
-import com.example.avatardance.R.layout;
-import com.example.avatardance.R.menu;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,10 +41,25 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-
 public class DanceActivity extends Activity  {
 
 	static private final String TAG = "DANCE ACTIVITY";
+	
+	private ImageButton buttonPlay;
+	private ImageButton buttonBack;
+	private ImageButton buttonFwd;
+	
+	private String playlistID;
+	
+	ArrayList<SongItem> songData;
+	Stack<Integer> songHistory;
+	
+	private MediaPlayer mp;
+	private Cursor cursor = null;
+	private boolean isPlaying = true;
+	private boolean isShuffle = false;
+	private int currentSongIndex;
+	private float currentSongBPM = -1;
 	
 	private LAppLive2DManager live2DMgr ;
 	static private Activity instance;
@@ -49,12 +69,6 @@ public class DanceActivity extends Activity  {
 	//private SurfaceTexture surface;
 	
 	private Live2DMotion motion;
-	
-	private float currentSongBPM = -1;
-	
-	private String modelJSON = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/miku.model.json";
-	
-	BroadcastReceiver mReceiver;
 
 	public DanceActivity( )
 	{
@@ -67,46 +81,28 @@ public class DanceActivity extends Activity  {
     	instance.finish();
     }
 	 
-	 @Override
-	    public void onCreate(Bundle savedInstanceState)
-		{
-	        super.onCreate(savedInstanceState);
-	        requestWindowFeature(Window.FEATURE_NO_TITLE);
-	        
-	        mReceiver = new BroadcastReceiver() {
-
-				@Override
-				public void onReceive(Context context, Intent intent) {
-					String artist = intent.getStringExtra("artist");
-					String title = intent.getStringExtra("track");
-					getBPM(title, artist);
-				}
-	        };
-
-	        IntentFilter iF = new IntentFilter();
-	        
-	        // stock music player
-	        iF.addAction("com.android.music.metachanged");
-	 
-	        // MIUI music player
-	        iF.addAction("com.miui.player.metachanged");
-	 
-	        // HTC music player
-	        iF.addAction("com.htc.music.metachanged");
-	 
-	        // WinAmp
-	        iF.addAction("com.nullsoft.winamp.metachanged");
-	 
-	        // MyTouch4G
-	        iF.addAction("com.real.IMP.metachanged");
-	 
-	        registerReceiver(mReceiver, iF);
-	        
-	      	setupGUI();
-	      	FileManager.init(this.getApplicationContext());
-	      	
-	    }
-
+	@Override
+    public void onCreate(Bundle savedInstanceState)
+	{
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        
+        setupGUI();
+        
+        mp = new MediaPlayer();
+        songHistory = new Stack<Integer>();
+        
+        Intent intent = getIntent();
+        String playlistID = intent.getExtras().getString("playlistID");
+        String songPosition = intent.getExtras().getString("songPosition");
+        
+        setPlaylist(playlistID);
+        setSongIndex(songPosition);
+        setNewSong(currentSongIndex);
+        
+      	
+      	FileManager.init(this.getApplicationContext());
+    }
 	
 	void setupGUI()
 	{
@@ -117,30 +113,94 @@ public class DanceActivity extends Activity  {
 		
         LAppView view = live2DMgr.createView(this) ;
 
-        // activity_main.xmlにLive2DのViewをレイアウトする
         FrameLayout layout=(FrameLayout) findViewById(R.id.live2DLayout);
 		layout.addView(view, 0, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		//view.bringToFront();
 		findViewById(R.id.controls).bringToFront();
 		
-		
-		// モデル切り替えボタン
-		//ImageButton iBtn = (ImageButton)findViewById(R.id.imageButton1);
-		//ClickListener listener = new ClickListener();
-		//iBtn.setOnClickListener(listener);
-		
-		ImageButton buttonPlay = (ImageButton) findViewById(R.id.button_play);
+		buttonPlay = (ImageButton) findViewById(R.id.button_play);
 		ButtonPlayListener buttonPlayListener = new ButtonPlayListener();
 		buttonPlay.setOnClickListener(buttonPlayListener);
 		
-		ImageButton buttonBack = (ImageButton) findViewById(R.id.button_back);
+		buttonBack = (ImageButton) findViewById(R.id.button_back);
 		ButtonBackListener buttonBackListener = new ButtonBackListener();
 		buttonBack.setOnClickListener(buttonBackListener);
 		
-		ImageButton buttonFwd = (ImageButton) findViewById(R.id.button_forward);
+		buttonFwd = (ImageButton) findViewById(R.id.button_forward);
 		ButtonFwdListener buttonFwdListener = new ButtonFwdListener();
 		buttonFwd.setOnClickListener(buttonFwdListener);
+	}
+	
+	public void setPlaylist(String playlistID) {
+
+		songData = new ArrayList<SongItem>();
+		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+		ContentResolver cr = this.getContentResolver();
+		String[] projection = { MediaStore.Audio.Media.TITLE,
+				MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DATA };
 		
+		if (playlistID == null || playlistID.equals("all")) {
+			// Query the MediaStore for all music files
+			String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
+			Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			cursor = cr.query(uri, projection, selection, null, sortOrder);
+		} else {
+			Long id = Long.parseLong(playlistID);
+			Uri uri = MediaStore.Audio.Playlists.Members.getContentUri(
+					"external", id);
+			cursor = cr.query(uri, projection, selection, null, null);
+		}
+		
+		cursor.moveToFirst();
+		for (int i = 0; i < cursor.getCount(); i++) {
+			songData.add(new SongItem(
+					cursor.getString(cursor
+							.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE)),
+					cursor.getString(cursor
+							.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST)),
+					cursor.getString(cursor
+							.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA))));
+			cursor.moveToNext();
+		}
+		cursor.close();
+	}
+	
+	private void setSongIndex(String songPosition) {
+		if (songPosition == null || songPosition.equals("shuffle")) {
+			isShuffle = true;
+			currentSongIndex = pickRandomSong();
+		} else {
+			isShuffle = false;
+			currentSongIndex = Integer.parseInt(songPosition);
+		}
+	}
+	
+	private int pickRandomSong() {
+		return new Random().nextInt(songData.size());
+	}
+	
+	private void setNewSong(int i) {
+		
+		getBPM();
+		try {
+			mp.reset();
+			mp.setDataSource(songData.get(i).getFilepath());
+			mp.prepare();
+			mp.start();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void getBPM() {
+		SongItem i = songData.get(currentSongIndex);
+		String title = i.getTitle();
+		String artist = i.getArtist();
+		
+		new SongBPMRetriever().getBPM(title, artist, this);
 	}
 	
 	private void getBPM(String title, String artist) {
@@ -151,14 +211,10 @@ public class DanceActivity extends Activity  {
 	public void setBPM (float _bpm) {
 		currentSongBPM = _bpm;
 		Toast.makeText(getApplicationContext(), "bpm: " + _bpm, Toast.LENGTH_SHORT).show();
-		live2DMgr.setBPM(_bpm);
-	}
-	
-	public String getModelJSON() {
-		return modelJSON;
+		live2DMgr.danceSetBPM(_bpm);
 	}
 
-
+	/*
 	// ボタンを押した時のイベント
 	class ClickListener implements OnClickListener{
 
@@ -167,14 +223,25 @@ public class DanceActivity extends Activity  {
 			Toast.makeText(getApplicationContext(), "change model", Toast.LENGTH_SHORT).show();
 			live2DMgr.changeModel();//Live2D Event
 		}
-	}
+	}*/
 	
 	class ButtonPlayListener implements OnClickListener{
 
 		@Override
 		public void onClick(View v) {
-			
-			
+			if (mp != null) {
+				if (isPlaying) {
+					buttonPlay.setBackground(getResources().getDrawable(R.drawable.play));
+					live2DMgr.danceStop();
+					mp.pause();
+				} else {
+					buttonPlay.setBackground(getResources().getDrawable(R.drawable.pause));
+					live2DMgr.danceStart();
+					live2DMgr.danceSetBPM(currentSongBPM);
+					mp.start();
+				}
+				isPlaying = !isPlaying;
+			}
 		}
 	}
 	
@@ -182,8 +249,22 @@ public class DanceActivity extends Activity  {
 
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			
+			if (isShuffle) {
+				
+				if (!songHistory.isEmpty()) {
+					int i = songHistory.pop();
+					setNewSong(i);
+				}
+				
+			} else {
+				
+				if (currentSongIndex > 0) {
+					currentSongIndex--;
+				} else {
+					currentSongIndex = songData.size() - 1;
+				}
+				setNewSong(currentSongIndex);
+			}
 		}
 	}
 	
@@ -191,8 +272,18 @@ public class DanceActivity extends Activity  {
 
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			
+			if (isShuffle) {
+				int i = pickRandomSong();
+				songHistory.push(i);
+				setNewSong(i);
+			} else {
+				if (currentSongIndex < songData.size() - 1) {
+					currentSongIndex++;
+				} else {
+					currentSongIndex = 0;
+				}
+				setNewSong(currentSongIndex);	
+			}
 		}
 	}
 
@@ -225,13 +316,11 @@ public class DanceActivity extends Activity  {
 	}
 
 	protected void onStop() {
-		unregisterReceiver(mReceiver);
 		super.onStop();
 	}
 
 	protected void onDestroy() {
 		super.onDestroy();
+		mp.release();
 	}
-
-
 }

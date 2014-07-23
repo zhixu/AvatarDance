@@ -57,7 +57,7 @@ public class PlaylistActivity extends ListActivity {
 					.getColumnIndex(MediaStore.Audio.Playlists._ID));
 			name = cursor.getString(cursor
 					.getColumnIndex(MediaStore.Audio.Playlists.NAME));
-			// PlaylistItem item = new PlaylistItem(id, name);
+
 			playlists.put(name, id);
 			playlistN.add(name);
 			cursor.moveToNext();
@@ -83,9 +83,9 @@ public class PlaylistActivity extends ListActivity {
 		Intent i = new Intent(this, SonglistActivity.class);
 		i.putExtra("playlistID", playlistID);
 		i.putExtra("name", name);
-		startActivityForResult(i, PLAYLIST_ACTIVITY);
 
-		// send info to other view, populate other view with items.
+		startActivity(i);
+		
 	}
 
 	@Override

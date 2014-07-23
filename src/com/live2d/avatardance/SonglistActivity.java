@@ -3,9 +3,6 @@ package com.live2d.avatardance;
 import java.util.ArrayList;
 
 import com.example.avatardance.R;
-import com.example.avatardance.R.id;
-import com.example.avatardance.R.layout;
-import com.example.avatardance.R.menu;
 
 import android.app.Activity;
 import android.app.ListActivity;
@@ -43,13 +40,12 @@ public class SonglistActivity extends ListActivity {
 		ArrayList<SongItem> songData = new ArrayList<SongItem>();
 		
 		//shuffle option
-		songData.add(new SongItem( this, "Shuffle", "", null));
+		songData.add(new SongItem( "Shuffle", "", null));
 
 		if (playlistID.equals("all")) {
-
 			// Query the MediaStore for all music files
 			String[] projection = { MediaStore.Audio.Media.TITLE,
-					MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DATA };
+					MediaStore.Audio.Media.ARTIST };
 			String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
 			Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 			cr = this.getContentResolver();
@@ -58,13 +54,10 @@ public class SonglistActivity extends ListActivity {
 
 			for (int i = 0; i < cursor.getCount(); i++) {
 				songData.add(new SongItem(
-						this,
 						cursor.getString(cursor
 								.getColumnIndex(MediaStore.Audio.Media.TITLE)),
 						cursor.getString(cursor
-								.getColumnIndex(MediaStore.Audio.Media.ARTIST)),
-						cursor.getString(cursor
-								.getColumnIndex(MediaStore.Audio.Media.DATA))));
+								.getColumnIndex(MediaStore.Audio.Media.ARTIST))));
 				cursor.moveToNext();
 			}
 			cursor.close();
@@ -72,9 +65,7 @@ public class SonglistActivity extends ListActivity {
 		} else {
 
 			String[] projection = { MediaStore.Audio.Playlists.Members.TITLE,
-					MediaStore.Audio.Playlists.Members.ARTIST,
-					MediaStore.Audio.Playlists.Members.DATA,
-					MediaStore.Audio.Playlists.Members.ALBUM_ID };
+					MediaStore.Audio.Playlists.Members.ARTIST };
 			Long id = Long.parseLong(playlistID);
 			Uri uri = MediaStore.Audio.Playlists.Members.getContentUri(
 					"external", id);
@@ -83,13 +74,10 @@ public class SonglistActivity extends ListActivity {
 
 			for (int i = 0; i < cursor.getCount(); i++) {
 				songData.add(new SongItem(
-						this,
 						cursor.getString(cursor
 								.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE)),
 						cursor.getString(cursor
-								.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST)),
-						cursor.getString(cursor
-								.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA))));
+								.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST))));
 				cursor.moveToNext();
 			}
 			cursor.close();
@@ -108,7 +96,7 @@ public class SonglistActivity extends ListActivity {
 			long id) {
 		super.onListItemClick(listView, view, position, id);
 
-		Intent i = new Intent();
+		Intent i = new Intent(this, DanceActivity.class);
 		i.putExtra("playlistID", playlistID);
 		
 		if (position == 0) {
@@ -116,10 +104,8 @@ public class SonglistActivity extends ListActivity {
 		} else {
 			i.putExtra("songPosition", Integer.toString(position-1));
 		}
-		setResult(Activity.RESULT_OK, i);
-		
-		finish();
 
+		startActivity(i);
 	}
 
 	@Override
