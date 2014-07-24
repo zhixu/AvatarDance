@@ -185,7 +185,9 @@ public class DanceActivity extends Activity  {
 			mp.reset();
 			mp.setDataSource(songData.get(i).getFilepath());
 			mp.prepare();
-			mp.start();
+			if (isPlaying) {
+				mp.start();
+			}
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
@@ -233,6 +235,7 @@ public class DanceActivity extends Activity  {
 				if (isPlaying) {
 					buttonPlay.setBackground(getResources().getDrawable(R.drawable.play));
 					live2DMgr.danceStop();
+					live2DMgr.danceResetBPM(currentSongBPM);
 					mp.pause();
 				} else {
 					buttonPlay.setBackground(getResources().getDrawable(R.drawable.pause));

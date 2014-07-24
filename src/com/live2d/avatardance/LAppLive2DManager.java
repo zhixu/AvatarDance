@@ -78,12 +78,17 @@ public class LAppLive2DManager
 	
 	public void danceSetBPM (float bpm) {
 		
-		float danceSec = 1/(bpm*60);
-		UtSystem.setUserTimeMSec((long) danceSec);
+		float danceMSec = (1/(bpm*60))*1000;
+		Log.d(TAG, "starting: " + danceMSec);
+		UtSystem.setUserTimeMSec((long) danceMSec);
 	}
 	
-	public void danceResetBPM () {
-		UtSystem.setUserTimeMSec((long) 1);
+	public void danceResetBPM (float bpm) {
+		float danceMSec = bpm*60/1000;
+		UtSystem.updateUserTimeMSec();
+		Log.d(TAG, "stopping: " + UtSystem.getUserTimeMSec());
+		//setUserTimeMSec(UtSystem.getUserTimeMSec());
+		UtSystem.setUserTimeMSec((long) danceMSec);
 	}
 
 
@@ -263,7 +268,7 @@ public class LAppLive2DManager
 		Log.d(TAG, "dance stopping");
 		
 		//model.startRandomMotion(LAppDefine.MOTION_GROUP_IDLE, LAppDefine.PRIORITY_NORMAL);
-		danceResetBPM();
+		//danceResetBPM();
 		model.toggleDance();
 	}
 	
@@ -289,6 +294,7 @@ public class LAppLive2DManager
 	public boolean tapEvent(float x,float y)
 	{
 		if(LAppDefine.DEBUG_LOG)Log.d(TAG, "tapEvent view x:"+x+" y:"+y);
+		model.startRandomMotion(LAppDefine.MOTION_GROUP_IDLE, LAppDefine.PRIORITY_NORMAL );
 
 		/*
 		for (int i=0; i<models.size(); i++)

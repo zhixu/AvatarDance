@@ -147,6 +147,7 @@ public class LAppModel extends L2DBaseModel
 		String[] expressionPaths=modelSetting.getExpressionFiles();
 
 		for (int i = 0; i < expressionPaths.length; i++) {
+			Log.d(TAG, "expression path: " + expressionPaths[i]);
 			loadExpression(expressionNames[i],modelHomeDir+ expressionPaths[i]);
 		}
 
@@ -226,7 +227,7 @@ public class LAppModel extends L2DBaseModel
 			if(mainMotionManager.isFinished())
 			{
 				// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã?®å†?ç”Ÿã?Œã?ªã?„å ´å?ˆã€?å¾…æ©Ÿãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã?®ä¸­ã?‹ã‚‰ãƒ©ãƒ³ãƒ€ãƒ ã?§å†?ç”Ÿã?™ã‚‹
-				
+				startRandomMotion(LAppDefine.MOTION_GROUP_DANCE, LAppDefine.PRIORITY_IDLE);
 				if (isDance) {
 					startRandomMotion(LAppDefine.MOTION_GROUP_DANCE, LAppDefine.PRIORITY_IDLE);
 				} else {
@@ -238,12 +239,7 @@ public class LAppModel extends L2DBaseModel
 			live2DModel.loadParam();// å‰?å›žã‚»ãƒ¼ãƒ–ã?•ã‚Œã?ŸçŠ¶æ…‹ã‚’ãƒ­ãƒ¼ãƒ‰
 
 			boolean update = mainMotionManager.updateParam(live2DModel);// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ›´æ–°
-			if( ! update)
-			{
-				// ãƒ¡ã‚¤ãƒ³ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã?®æ›´æ–°ã?Œã?ªã?„ã?¨ã??
-				eyeBlink.updateParam(live2DModel);// ç›®ãƒ‘ãƒ?
-			}
-
+			eyeBlink.updateParam(live2DModel);
 			live2DModel.saveParam();// çŠ¶æ…‹ã‚’ä¿?å­˜
 			//-----------------------------------------------------------------
 		}
@@ -258,7 +254,7 @@ public class LAppModel extends L2DBaseModel
 		live2DModel.addToParamFloat( L2DStandardID.PARAM_ANGLE_Z, (dragX*dragY) * -30 , 1 );
 
 		// ãƒ‰ãƒ©ãƒƒã‚°ã?«ã‚ˆã‚‹ä½“ã?®å?‘ã??ã?®èª¿æ•´
-		live2DModel.addToParamFloat( L2DStandardID.PARAM_BODY_ANGLE_X    , dragX * 10 , 1 );// -10ã?‹ã‚‰10ã?®å€¤ã‚’åŠ ã?ˆã‚‹
+		live2DModel.addToParamFloat( L2DStandardID.PARAM_BODY_ANGLE_X    , dragX * 10 , 1  );// -10ã?‹ã‚‰10ã?®å€¤ã‚’åŠ ã?ˆã‚‹
 
 		// ãƒ‰ãƒ©ãƒƒã‚°ã?«ã‚ˆã‚‹ç›®ã?®å?‘ã??ã?®èª¿æ•´
 		live2DModel.addToParamFloat( L2DStandardID.PARAM_EYE_BALL_X, dragX  , 1 );// -1ã?‹ã‚‰1ã?®å€¤ã‚’åŠ ã?ˆã‚‹
