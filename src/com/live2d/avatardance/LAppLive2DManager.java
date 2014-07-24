@@ -20,20 +20,18 @@ import android.util.Log;
 
 public class LAppLive2DManager
 {
-	//  ãƒ­ã‚°ç”¨ã‚¿ã‚°
+
 	static public final String 	TAG = "SampleLive2DManager";
 
-	private LAppView 				view;						// ãƒ¢ãƒ‡ãƒ«è¡¨ç¤ºç”¨View
+	private LAppView 				view;		
 	private DanceActivity 			activity;
 
-	// ãƒ¢ãƒ‡ãƒ«ãƒ‡ãƒ¼ã‚¿
-	//private ArrayList<LAppModel>	models;
 	private LAppModel model;
 	
-
-	//  ãƒœã‚¿ãƒ³ã?‹ã‚‰å®Ÿè¡Œã?§ã??ã‚‹ã‚µãƒ³ãƒ—ãƒ«æ©Ÿèƒ½
-	//private int 					modelCount		=-1;
-	//private boolean 				reloadFlg;					//  ãƒ¢ãƒ‡ãƒ«å†?èª­ã?¿è¾¼ã?¿ã?®ãƒ•ãƒ©ã‚°
+	private boolean isDance = true;
+	private long time;
+	private float timePerBeat;
+	private long prevTime; // the previous time at which the update function has been called.
 
 	private String modelURI = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/miku.model.json";
 
@@ -46,9 +44,8 @@ public class LAppLive2DManager
 		
 		model = new LAppModel();
 		
-		
-
-		//models = new ArrayList<LAppModel>();
+		time = 0;
+		prevTime = 0;
 	}
 	
 	public void loadModel(GL10 gl) {
@@ -56,7 +53,6 @@ public class LAppLive2DManager
 			model.load(gl, modelURI);
 			model.feedIn();
 		} catch (Exception e) {
-				// ãƒ•ã‚¡ã‚¤ãƒ«ã?®æŒ‡å®šãƒŸã‚¹ã?‹ãƒ¡ãƒ¢ãƒªä¸?è¶³ã?Œè€ƒã?ˆã‚‰ã‚Œã‚‹ã€‚å¾©å¸°ã?‹ä¸­æ–­ã?Œå¿…è¦?
 				Log.e(TAG,"Failed to load.");
 				DanceActivity.exit();
 		}
@@ -65,30 +61,27 @@ public class LAppLive2DManager
 
 	public void releaseModel()
 	{
-		/*
-		for(int i=0;i<models.size();i++)
-		{
-			models.get(i).release();// ãƒ†ã‚¯ã‚¹ãƒ?ãƒ£ã?ªã?©ã‚’è§£æ”¾
-		}
-
-		models.clear();*/
-		
 		model.release();
 	}
 	
 	public void danceSetBPM (float bpm) {
-		
-		float danceMSec = (1/(bpm*60))*1000;
-		Log.d(TAG, "starting: " + danceMSec);
-		UtSystem.setUserTimeMSec((long) danceMSec);
+		if (bpm == -1) {
+			timePerBeat = 1000;
+		} else {
+			timePerBeat = bpm*1000/60;
+		}
 	}
 	
 	public void danceResetBPM (float bpm) {
-		float danceMSec = bpm*60/1000;
+		
+		/*
 		UtSystem.updateUserTimeMSec();
-		Log.d(TAG, "stopping: " + UtSystem.getUserTimeMSec());
-		//setUserTimeMSec(UtSystem.getUserTimeMSec());
-		UtSystem.setUserTimeMSec((long) danceMSec);
+		prevTime = UtSystem.getUserTimeMSec();
+		UtSystem.setUserTimeMSec(prevTime);
+		time = prevTime;*/
+		
+		timePerBeat = 1000;//(long) 681;//(long) bpm*60/1000;
+		
 	}
 
 
@@ -106,60 +99,26 @@ public class LAppLive2DManager
 	{
 		view.update();
 		
+		UtSystem.updateUserTimeMSec();
+		long currTime = UtSystem.getUserTimeMSec();
 		
-		
-		/*
-		if(reloadFlg)
-		{
-			// ãƒ¢ãƒ‡ãƒ«åˆ‡ã‚Šæ›¿ã?ˆãƒœã‚¿ãƒ³ã?ŒæŠ¼ã?•ã‚Œã?Ÿæ™‚ã€?ãƒ¢ãƒ‡ãƒ«ã‚’å†?èª­ã?¿è¾¼ã?¿ã?™ã‚‹
-			reloadFlg=false;
-
-			int no = modelCount % 4;
-
-			try {
-				switch (no) {
-				case 0:// ãƒ?ãƒ«
-					releaseModel();
-
-					models.add(new LAppModel());
-					models.get(0).load(gl, LAppDefine.MODEL_HARU);
-					models.get(0).feedIn();
-					break;
-				case 1:// ã?—ã?šã??
-					releaseModel();
-
-					models.add(new LAppModel());
-					models.get(0).load(gl, LAppDefine.MODEL_SHIZUKU);
-					models.get(0).feedIn();
-					break;
-				case 2:// ã‚?ã‚“ã?“
-					releaseModel();
-
-					models.add(new LAppModel());
-					models.get(0).load(gl, LAppDefine.MODEL_WANKO);
-					models.get(0).feedIn();
-					break;
-				case 3:// è¤‡æ•°ãƒ¢ãƒ‡ãƒ«
-					releaseModel();
-
-					models.add(new LAppModel());
-					models.get(0).load(gl, LAppDefine.MODEL_HARU_A);
-					models.get(0).feedIn();
-
-					models.add(new LAppModel());
-					models.get(1).load(gl, LAppDefine.MODEL_HARU_B);
-					models.get(1).feedIn();
-					break;
-				default:
-
-					break;
-				}
-			} catch (Exception e) {
-				// ãƒ•ã‚¡ã‚¤ãƒ«ã?®æŒ‡å®šãƒŸã‚¹ã?‹ãƒ¡ãƒ¢ãƒªä¸?è¶³ã?Œè€ƒã?ˆã‚‰ã‚Œã‚‹ã€‚å¾©å¸°ã?‹ä¸­æ–­ã?Œå¿…è¦?
-				Log.e(TAG,"Failed to load.");
-				DanceActivity.exit();
+		//if (isDance) {
+			if (timePerBeat != 0) {
+				float deltaTime = (currTime - prevTime); // to get the % of beat that passed
+				float ratio = deltaTime/1000;
+				long warpedTime = (long) (ratio*timePerBeat);
+	
+				time += warpedTime;
+				prevTime = currTime;
+				UtSystem.setUserTimeMSec(time);
 			}
-		} */
+		/*} else {
+			UtSystem.setUserTimeMSec(currTime);
+		}*/
+		//time = time + timePerBeat;
+		
+		//UtSystem.setUserTimeMSec(time);
+		
 	}
 
 
@@ -173,17 +132,6 @@ public class LAppLive2DManager
 	public LAppModel getModel() {
 		return model;
 	}
-	
-	/*public LAppModel getModel(int no)
-	{
-		if(no>=models.size())return null;
-		return models.get(no);
-	}
-
-	public int getModelNum()
-	{
-		return models.size();
-	}*/
 
 	//=========================================================
 	// 	ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³å?´ï¼ˆSampleApplicationï¼‰ã?‹ã‚‰å‘¼ã?°ã‚Œã‚‹å‡¦ç?†
@@ -238,14 +186,6 @@ public class LAppLive2DManager
 	{
 		if(LAppDefine.DEBUG_LOG)Log.d(TAG, "onSurfaceChanged "+width+" "+height);
 		view.setupView(width,height);
-
-		/*
-		if(getModelNum()==0)
-		{
-
-			changeModel();
-
-		}*/	
 	}
 
 
@@ -262,23 +202,13 @@ public class LAppLive2DManager
 	}*/
 
 	public void danceStop() {
-		/*for (int i=0; i<models.size(); i++) {
-			models.get(i).startRandomMotion(LAppDefine.MOTION_GROUP_IDLE, LAppDefine.PRIORITY_NORMAL);
-		}*/
-		Log.d(TAG, "dance stopping");
-		
-		//model.startRandomMotion(LAppDefine.MOTION_GROUP_IDLE, LAppDefine.PRIORITY_NORMAL);
-		//danceResetBPM();
+		isDance = false;
 		model.toggleDance();
 	}
 	
 	public void danceStart() {
-		/*for (int i=0; i<models.size(); i++) {
-			models.get(i).startRandomMotion(LAppDefine.MOTION_GROUP_DANCE, LAppDefine.PRIORITY_NORMAL);
-		}*/
-		Log.d(TAG, "dance starting");
+		isDance = true;
 		model.toggleDance();
-		//model.startRandomMotion(LAppDefine.MOTION_GROUP_DANCE, LAppDefine.PRIORITY_NORMAL);
 	}
 
 	//=========================================================
@@ -362,11 +292,6 @@ public class LAppLive2DManager
 	public void minScaleEvent()
 	{
 		if(LAppDefine.DEBUG_LOG)Log.d(TAG, "Min scale event.");
-		/*
-		for (int i=0; i<models.size(); i++)
-		{
-			models.get(i).startRandomMotion(LAppDefine.MOTION_GROUP_PINCH_OUT,LAppDefine.PRIORITY_NORMAL );
-		}*/
 	}
 
 
@@ -379,33 +304,16 @@ public class LAppLive2DManager
 	public void shakeEvent()
 	{
 		if(LAppDefine.DEBUG_LOG)Log.d(TAG, "Shake event.");
-		/*
-		for (int i=0; i<models.size(); i++)
-		{
-			models.get(i).startRandomMotion(LAppDefine.MOTION_GROUP_DANCE,LAppDefine.PRIORITY_FORCE );
-		}*/
 	}
 	
 	public void setAccel(float x,float y,float z)
 	{
-		/*
-		for (int i=0; i<models.size(); i++)
-		{
-			models.get(i).setAccel(x, y, z);
-		}*/
-		
 		model.setAccel(x, y, z);
 	}
 
 
 	public void setDrag(float x,float y)
 	{
-		/*
-		for (int i=0; i<models.size(); i++)
-		{
-			models.get(i).setDrag(x, y);
-		}
-		*/
 		model.setDrag(x, y);
 	}
 

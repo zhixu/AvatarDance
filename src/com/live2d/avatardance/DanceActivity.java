@@ -205,11 +205,6 @@ public class DanceActivity extends Activity  {
 		new SongBPMRetriever().getBPM(title, artist, this);
 	}
 	
-	private void getBPM(String title, String artist) {
-		currentSongBPM = -1;
-		new SongBPMRetriever().getBPM(title, artist, this);
-	}
-	
 	public void setBPM (float _bpm) {
 		currentSongBPM = _bpm;
 		Toast.makeText(getApplicationContext(), "bpm: " + _bpm, Toast.LENGTH_SHORT).show();
@@ -289,6 +284,10 @@ public class DanceActivity extends Activity  {
 			}
 		}
 	}
+	
+	public long getSongPosition() {
+		return mp.getCurrentPosition();
+	}
 
 
 	/*
@@ -303,7 +302,6 @@ public class DanceActivity extends Activity  {
 		super.onResume();
 		
 	}
-
 
 	/*
 	 * Activityを停止したときのイベント。

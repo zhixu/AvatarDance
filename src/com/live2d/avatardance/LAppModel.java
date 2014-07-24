@@ -147,7 +147,6 @@ public class LAppModel extends L2DBaseModel
 		String[] expressionPaths=modelSetting.getExpressionFiles();
 
 		for (int i = 0; i < expressionPaths.length; i++) {
-			Log.d(TAG, "expression path: " + expressionPaths[i]);
 			loadExpression(expressionNames[i],modelHomeDir+ expressionPaths[i]);
 		}
 
@@ -227,7 +226,6 @@ public class LAppModel extends L2DBaseModel
 			if(mainMotionManager.isFinished())
 			{
 				// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã?®å†?ç”Ÿã?Œã?ªã?„å ´å?ˆã€?å¾…æ©Ÿãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã?®ä¸­ã?‹ã‚‰ãƒ©ãƒ³ãƒ€ãƒ ã?§å†?ç”Ÿã?™ã‚‹
-				startRandomMotion(LAppDefine.MOTION_GROUP_DANCE, LAppDefine.PRIORITY_IDLE);
 				if (isDance) {
 					startRandomMotion(LAppDefine.MOTION_GROUP_DANCE, LAppDefine.PRIORITY_IDLE);
 				} else {
@@ -347,8 +345,6 @@ public class LAppModel extends L2DBaseModel
 		int max=modelSetting.getMotionNum(name);
 		int no=(int)(Math.random() * max);
 		
-		Log.d(TAG, "name: " + name + " no: " + no);
-		
 		startMotion(name,no,priority);
 	}
 
@@ -363,12 +359,9 @@ public class LAppModel extends L2DBaseModel
 	public void startMotion(String name, int no,int priority)
 	{
 		String motionName=modelSetting.getMotionFile(name, no);
-		
-		Log.d(TAG, "motionName: " + motionName);
 
 		if( motionName==null || motionName.equals(""))
 		{
-			Log.d(TAG, "FAILED motionName: " + motionName);
 			if(LAppDefine.DEBUG_LOG){Log.d(TAG, "Failed to motion.");}
 			return;//
 		}
