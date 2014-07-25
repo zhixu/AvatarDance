@@ -9,40 +9,96 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" >
+        
+        
 
 	    <RelativeLayout
-	        android:id="@+id/controls"
+	        android:id="@+id/layout_menu"
 	        android:layout_width="match_parent"
-	        android:layout_gravity="bottom"
-	        android:layout_height="60dp"
-	        android:layout_margin="10dp" >
-
+	        android:layout_height="match_parent" >
+	        
 	        <ImageButton
-	            android:id="@+id/button_back"
-	            android:layout_width="50dp"
-	            android:layout_height="50dp"
-	            android:layout_alignParentLeft="true"
-	            android:layout_centerHorizontal="true"
-	            android:background="@drawable/back"
-	            android:contentDescription="@string/player_settings" />
-
-	        <ImageButton
-	            android:id="@+id/button_forward"
-	            android:layout_width="50dp"
-	            android:layout_height="50dp"
+	            android:id="@+id/button_menu"
+	            android:layout_width="30dp"
+	            android:layout_height="30dp"
+	            android:layout_marginRight="14dp"
+	            android:layout_marginTop="14dp"
 	            android:layout_alignParentRight="true"
-	            android:layout_centerHorizontal="true"
-	            android:background="@drawable/forward"
+	            android:background="@drawable/menu"
 	            android:contentDescription="@string/player_settings" />
+	        
+	        <RelativeLayout
+		        android:id="@+id/controls"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent" >
+	
+		        <LinearLayout
+		            android:id="@+id/layout_bpm"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_alignParentLeft="true"
+		            android:layout_alignParentTop="true"
+		            android:layout_margin="10dp"
+		            android:gravity="center"
+		            android:orientation="vertical" >
+	
+		            <ImageButton
+		                android:id="@+id/button_up"
+		                android:layout_width="30dp"
+		                android:layout_height="30dp"
+		                android:background="@drawable/up"
+		                android:contentDescription="@string/player_settings" />
+	
+		            <TextView
+		                android:id="@+id/string_BPM"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:text="@string/string_bpm" />
+	
+		            <TextView
+		                android:id="@+id/value_bpm"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:text="@string/value_bpm" />
+	
+		            <ImageButton
+		                android:id="@+id/button_down"
+		                android:layout_width="30dp"
+		                android:layout_height="30dp"
+		                android:background="@drawable/down"
+		                android:contentDescription="@string/player_settings" />
+		        </LinearLayout>
 
-	        <ImageButton
-	            android:id="@+id/button_play"
-	            android:layout_width="50dp"
-	            android:layout_height="50dp"
-	            android:layout_alignParentTop="true"
-	            android:layout_centerHorizontal="true"
-	            android:background="@drawable/pause"
-	            android:contentDescription="@string/player_settings" />
+		        <ImageButton
+		            android:id="@+id/button_back"
+		            android:layout_width="30dp"
+		            android:layout_height="30dp"
+		            android:layout_alignParentBottom="true"
+		            android:layout_marginBottom="32dp"
+		            android:layout_toRightOf="@+id/layout_bpm"
+		            android:background="@drawable/back"
+		            android:contentDescription="@string/player_settings" />
+
+		        <ImageButton
+		            android:id="@+id/button_play"
+		            android:layout_width="30dp"
+		            android:layout_height="30dp"
+		            android:layout_alignTop="@+id/button_back"
+		            android:layout_centerHorizontal="true"
+		            android:background="@drawable/pause"
+		            android:contentDescription="@string/player_settings" />
+
+		        <ImageButton
+		            android:id="@+id/button_forward"
+		            android:layout_width="30dp"
+		            android:layout_height="30dp"
+		            android:layout_alignTop="@+id/button_play"
+		            android:layout_marginLeft="56dp"
+		            android:layout_toRightOf="@+id/button_play"
+		            android:background="@drawable/forward"
+		            android:contentDescription="@string/player_settings" />
+
+	        </RelativeLayout>
 
 	    </RelativeLayout>
 

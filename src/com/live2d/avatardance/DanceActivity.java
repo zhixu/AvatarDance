@@ -31,14 +31,19 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class DanceActivity extends Activity  {
@@ -48,6 +53,11 @@ public class DanceActivity extends Activity  {
 	private ImageButton buttonPlay;
 	private ImageButton buttonBack;
 	private ImageButton buttonFwd;
+	private ImageButton buttonMenu;
+	private ImageButton buttonUp;
+	private ImageButton buttonDown;
+	
+	private TextView valueBPM;
 	
 	private String playlistID;
 	
@@ -87,10 +97,10 @@ public class DanceActivity extends Activity  {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         
-        setupGUI();
-        
         mp = new MediaPlayer();
         songHistory = new Stack<Integer>();
+        
+        setupGUI();
         
         Intent intent = getIntent();
         String playlistID = intent.getExtras().getString("playlistID");
@@ -99,7 +109,6 @@ public class DanceActivity extends Activity  {
         setPlaylist(playlistID);
         setSongIndex(songPosition);
         setNewSong(currentSongIndex);
-        
       	
       	FileManager.init(this.getApplicationContext());
     }
@@ -128,6 +137,24 @@ public class DanceActivity extends Activity  {
 		buttonFwd = (ImageButton) findViewById(R.id.button_forward);
 		ButtonFwdListener buttonFwdListener = new ButtonFwdListener();
 		buttonFwd.setOnClickListener(buttonFwdListener);
+		
+		buttonMenu = (ImageButton) findViewById(R.id.button_menu);
+		ButtonMenuListener buttonMenuListener = new ButtonMenuListener();
+		buttonMenu.setOnClickListener(buttonMenuListener);
+		
+		buttonUp = (ImageButton) findViewById(R.id.button_up);
+		ButtonUpListener buttonUpListener = new ButtonUpListener();
+		buttonUp.setOnClickListener(buttonUpListener);
+		buttonUp.setOnTouchListener(buttonUpListener);
+		
+		buttonDown = (ImageButton) findViewById(R.id.button_down);
+		ButtonDownListener buttonDownListener = new ButtonDownListener();
+		buttonDown.setOnClickListener(buttonDownListener);
+		buttonDown.setOnTouchListener(buttonDownListener);
+		
+		valueBPM = (TextView) findViewById(R.id.value_bpm);
+		//int bpm = (int) currentSongBPM;
+		//valueBPM.setText(Integer.toString(bpm));
 	}
 	
 	public void setPlaylist(String playlistID) {
@@ -206,21 +233,22 @@ public class DanceActivity extends Activity  {
 	}
 	
 	public void setBPM (float _bpm) {
-		currentSongBPM = _bpm;
-		Toast.makeText(getApplicationContext(), "bpm: " + _bpm, Toast.LENGTH_SHORT).show();
+		if (_bpm == -1) {
+			currentSongBPM = 60;
+		} else {
+			currentSongBPM = _bpm;
+		}
+		
+		int bpm = (int) currentSongBPM;
+		valueBPM.setText(Integer.toString(bpm));
+		
+		SongItem i = songData.get(currentSongIndex);
+		String title = i.getTitle();
+		String artist = i.getArtist();
+		
+		Toast.makeText(getApplicationContext(), artist + " - " + title + "\n bpm: " + _bpm, Toast.LENGTH_SHORT).show();
 		live2DMgr.danceSetBPM(_bpm);
 	}
-
-	/*
-	// ボタンを押した時のイベント
-	class ClickListener implements OnClickListener{
-
-		@Override
-		public void onClick(View v) {
-			Toast.makeText(getApplicationContext(), "change model", Toast.LENGTH_SHORT).show();
-			live2DMgr.changeModel();//Live2D Event
-		}
-	}*/
 	
 	class ButtonPlayListener implements OnClickListener{
 
@@ -285,11 +313,77 @@ public class DanceActivity extends Activity  {
 		}
 	}
 	
-	public long getSongPosition() {
-		return mp.getCurrentPosition();
+	class ButtonMenuListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			
+			RelativeLayout view = (RelativeLayout) findViewById(R.id.controls);
+			
+			if (view.getVisibility() == View.VISIBLE){
+				Log.d(TAG, "setting view invisible");
+				view.setVisibility(View.INVISIBLE);
+			} else if (view.getVisibility() == View.INVISIBLE){
+				Log.d(TAG, "setting view visible");
+				view.setVisibility(View.VISIBLE);
+			}
+		}
+		
 	}
+	
+	class ButtonUpListener implements OnClickListener, OnTouchListener {
 
+		@Override
+		public void onClick(View v) {
+			currentSongBPM++;
+			live2DMgr.danceSetBPM(currentSongBPM);
+			int bpm = (int) currentSongBPM;
+			valueBPM.setText(Integer.toString(bpm));
+		}
 
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			// TODO Auto-generated method stub
+			
+			currentSongBPM++;
+			live2DMgr.danceSetBPM(currentSongBPM);
+			int bpm = (int) currentSongBPM;
+			valueBPM.setText(Integer.toString(bpm));
+			
+			return true;
+		}
+		
+	}
+	
+	class ButtonDownListener implements OnClickListener, OnTouchListener {
+
+		@Override
+		public void onClick(View v) {
+			
+			if (currentSongBPM > 0) {
+				currentSongBPM--;
+				live2DMgr.danceSetBPM(currentSongBPM);
+				int bpm = (int) currentSongBPM;
+				valueBPM.setText(Integer.toString(bpm));
+			}
+		}
+
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			
+			Log.d(TAG, "on long click called");
+			if (currentSongBPM > 0) {
+				currentSongBPM--;
+				live2DMgr.danceSetBPM(currentSongBPM);
+				int bpm = (int) currentSongBPM;
+				valueBPM.setText(Integer.toString(bpm));
+			}
+			return true;
+			
+		}
+	}
+	
+	
 	/*
 	 * Activityを再開したときのイベント。
 	 */

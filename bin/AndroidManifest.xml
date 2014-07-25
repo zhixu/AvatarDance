@@ -30,11 +30,6 @@
         <activity
             android:name="com.live2d.avatardance.PlaylistActivity"
             android:label="@string/title_activity_playlist" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.live2d.avatardance.SonglistActivity"
@@ -43,6 +38,11 @@
         <activity
             android:name="com.live2d.avatardance.AvatarActivity"
             android:label="@string/title_activity_avatar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

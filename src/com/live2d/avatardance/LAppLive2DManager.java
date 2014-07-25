@@ -15,6 +15,7 @@ import jp.live2d.framework.L2DViewMatrix;
 import jp.live2d.framework.Live2DFramework;
 import jp.live2d.util.UtSystem;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.util.Log;
 
@@ -33,7 +34,7 @@ public class LAppLive2DManager
 	private float timePerBeat;
 	private long prevTime; // the previous time at which the update function has been called.
 
-	private String modelURI = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/miku.model.json";
+	//private String modelURI = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/miku.model.json";
 
 	public LAppLive2DManager(DanceActivity act)
 	{
@@ -50,6 +51,10 @@ public class LAppLive2DManager
 	
 	public void loadModel(GL10 gl) {
 		try {
+			
+			SharedPreferences prefs = activity.getSharedPreferences("user", activity.getApplicationContext().MODE_PRIVATE);
+			String modelURI = prefs.getString("avatarJSON", null);
+			
 			model.load(gl, modelURI);
 			model.feedIn();
 		} catch (Exception e) {
@@ -102,23 +107,15 @@ public class LAppLive2DManager
 		UtSystem.updateUserTimeMSec();
 		long currTime = UtSystem.getUserTimeMSec();
 		
-		//if (isDance) {
-			if (timePerBeat != 0) {
-				float deltaTime = (currTime - prevTime); // to get the % of beat that passed
-				float ratio = deltaTime/1000;
-				long warpedTime = (long) (ratio*timePerBeat);
-	
-				time += warpedTime;
-				prevTime = currTime;
-				UtSystem.setUserTimeMSec(time);
-			}
-		/*} else {
-			UtSystem.setUserTimeMSec(currTime);
-		}*/
-		//time = time + timePerBeat;
-		
-		//UtSystem.setUserTimeMSec(time);
-		
+		if (timePerBeat != 0) {
+			float deltaTime = (currTime - prevTime); // to get the % of beat that passed
+			float ratio = deltaTime/1000;
+			long warpedTime = (long) (ratio*timePerBeat);
+
+			time += warpedTime;
+			prevTime = currTime;
+			UtSystem.setUserTimeMSec(time);
+		}
 	}
 
 
@@ -203,12 +200,12 @@ public class LAppLive2DManager
 
 	public void danceStop() {
 		isDance = false;
-		model.toggleDance();
+		model.danceStop();
 	}
 	
 	public void danceStart() {
 		isDance = true;
-		model.toggleDance();
+		model.danceStart();
 	}
 
 	//=========================================================

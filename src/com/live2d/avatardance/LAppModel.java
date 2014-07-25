@@ -99,7 +99,20 @@ public class LAppModel extends L2DBaseModel
 	public void toggleDance() {
 		isDance = !isDance;
 	}
+	
+	public void danceStart() {
+		isDance = true;
+		mainMotionManager.resetPriority();
+		mainMotionManager.setReservePriority(0);
+		startRandomMotion(LAppDefine.MOTION_GROUP_DANCE, LAppDefine.PRIORITY_IDLE);
+	}
 
+	public void danceStop() {
+		isDance = false;
+		mainMotionManager.resetPriority();
+		mainMotionManager.setReservePriority(0);
+		startRandomMotion(LAppDefine.MOTION_GROUP_IDLE, LAppDefine.PRIORITY_IDLE);
+	}
 	/*
 	 * ãƒ¢ãƒ‡ãƒ«ã‚’åˆ?æœŸåŒ–ã?™ã‚‹
 	 * @param gl
@@ -363,16 +376,11 @@ public class LAppModel extends L2DBaseModel
 		if( motionName==null || motionName.equals(""))
 		{
 			if(LAppDefine.DEBUG_LOG){Log.d(TAG, "Failed to motion.");}
-			return;//
+			return;
 		}
 
 		AMotion motion;
 
-		// æ–°ã?—ã?„ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã?®priorityã?¨ã€?å†?ç”Ÿä¸­ã?®ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã€?äºˆç´„æ¸ˆã?¿ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã?®priorityã?¨æ¯”è¼ƒã?—ã?¦
-		// äºˆç´„å?¯èƒ½ã?§ã?‚ã‚Œã?°ï¼ˆå„ªå…ˆåº¦ã?Œé«˜ã?‘ã‚Œã?°ï¼‰å†?ç”Ÿã‚’äºˆç´„ã?—ã?¾ã?™ã€‚
-		//
-		// äºˆç´„ã?—ã?Ÿæ–°ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã?¯ã€?ã?“ã?®ãƒ•ãƒ¬ãƒ¼ãƒ ã?§å?³æ™‚å†?ç”Ÿã?•ã‚Œã‚‹ã?‹ã€?ã‚‚ã?—ã??ã?¯éŸ³å£°ã?®ãƒ­ãƒ¼ãƒ‰ç­‰ã?Œå¿…è¦?ã?ªå ´å?ˆã?¯
-		// ä»¥é™?ã?®ãƒ•ãƒ¬ãƒ¼ãƒ ã?§å†?ç”Ÿé–‹å§‹ã?•ã‚Œã?¾ã?™ã€‚
 		synchronized (lock)
 		{
 			if (priority == LAppDefine.PRIORITY_FORCE) {
