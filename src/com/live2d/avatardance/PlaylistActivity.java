@@ -27,6 +27,7 @@ import android.widget.TextView;
 public class PlaylistActivity extends ListActivity {
 	
 	final Integer PLAYLIST_ACTIVITY = 1;
+	final Integer BROWSE_PLAYLIST_CODE = 1;
 
 	private TextView playlistName;
 	private HashMap<String, String> playlists;
@@ -39,7 +40,6 @@ public class PlaylistActivity extends ListActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		setContentView(R.layout.activity_playlist);
-		
 		
 		ContentResolver cr = this.getContentResolver();
 		Uri uri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
@@ -87,9 +87,9 @@ public class PlaylistActivity extends ListActivity {
 		Intent i = new Intent(this, SonglistActivity.class);
 		i.putExtra("playlistID", playlistID);
 		i.putExtra("name", name);
-
+		i.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
 		startActivity(i);
-		
+		finish();
 	}
 
 	@Override

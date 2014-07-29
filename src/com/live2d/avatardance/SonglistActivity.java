@@ -99,7 +99,7 @@ public class SonglistActivity extends ListActivity {
 			long id) {
 		super.onListItemClick(listView, view, position, id);
 
-		Intent i = new Intent(this, DanceActivity.class);
+		Intent i = new Intent();
 		i.putExtra("playlistID", playlistID);
 		
 		if (position == 0) {
@@ -108,7 +108,8 @@ public class SonglistActivity extends ListActivity {
 			i.putExtra("songPosition", Integer.toString(position-1));
 		}
 
-		startActivity(i);
+		setResult(RESULT_OK, i);
+		finish();
 	}
 
 	@Override

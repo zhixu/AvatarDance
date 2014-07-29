@@ -17,12 +17,16 @@ import android.content.res.AssetFileDescriptor;
 
 public class FileManager {
 	static Context context ;
-
+	
+	private static boolean isAssets;
 
 	public static void init( Context c ){
 		context = c ;
 	}
 
+	public static void setAsset(boolean a) {
+		isAssets = a;
+	}
 
 	public static boolean exists_resource( String path ){
 		try {
@@ -36,7 +40,15 @@ public class FileManager {
 
 
 	public static InputStream open_resource( String path ) throws IOException{
-		return new FileInputStream(path);//context.getAssets().open(path) ;
+		if (!isAssets) {
+			return new FileInputStream(path);
+		} else {
+			return context.getAssets().open(path) ;
+		}
+	}
+	
+	public static InputStream open_asset (String path) throws IOException {
+		return context.getAssets().open(path) ;
 	}
 
 

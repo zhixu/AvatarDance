@@ -15,6 +15,7 @@ import jp.live2d.framework.L2DViewMatrix;
 import jp.live2d.framework.Live2DFramework;
 import jp.live2d.util.UtSystem;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.util.Log;
@@ -22,19 +23,21 @@ import android.util.Log;
 public class LAppLive2DManager
 {
 
-	static public final String 	TAG = "SampleLive2DManager";
+	static public final String 	TAG = "Live2DManager";
 
 	private LAppView 				view;		
 	private DanceActivity 			activity;
 
 	private LAppModel model;
 	
-	private boolean isDance = true;
+	private int modelNum;
+	private String modelPath;
+	private boolean isDance = false;
+	private boolean isUpdateModel = false;
+	private boolean isDefaultModel = true;
 	private long time;
 	private float timePerBeat;
 	private long prevTime; // the previous time at which the update function has been called.
-
-	//private String modelURI = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/miku.model.json";
 
 	public LAppLive2DManager(DanceActivity act)
 	{
@@ -52,17 +55,56 @@ public class LAppLive2DManager
 	public void loadModel(GL10 gl) {
 		try {
 			
-			SharedPreferences prefs = activity.getSharedPreferences("user", activity.getApplicationContext().MODE_PRIVATE);
-			String modelURI = prefs.getString("avatarJSON", null);
+			String modelURI = "miku";
 			
-			model.load(gl, modelURI);
+			if (modelPath != null) {
+				modelURI = modelPath;
+			}
+			
+			Log.d(TAG, modelURI);
+			
+			if (modelURI.equals("miku")) {
+				model.load(gl, LAppDefine.MODEL_HARU, true);
+			} else {
+				model.load(gl, modelURI, false);
+			}
+			
 			model.feedIn();
+			
 		} catch (Exception e) {
 				Log.e(TAG,"Failed to load.");
-				DanceActivity.exit();
+				activity.displayError();
+				//DanceActivity.exit();
 		}
 	}
-
+	
+	public void switchDefaultModel() {
+		isDefaultModel = true;
+		
+		if (modelNum < 1) {
+			modelNum++;
+		} else {
+			modelNum = 0;
+		}
+		
+		setDefaultModelPath();
+		
+		isUpdateModel = true;
+	}
+	
+	public void setDefaultModelPath() {
+		switch (modelNum) {
+		case 0:
+			modelPath = LAppDefine.MODEL_MIKU;
+			break;
+		}
+	}
+	
+	public void switchInputModel(String path) {
+		isDefaultModel = false;
+		modelPath = path;
+		isUpdateModel = true;
+	}
 
 	public void releaseModel()
 	{
@@ -79,13 +121,7 @@ public class LAppLive2DManager
 	
 	public void danceResetBPM (float bpm) {
 		
-		/*
-		UtSystem.updateUserTimeMSec();
-		prevTime = UtSystem.getUserTimeMSec();
-		UtSystem.setUserTimeMSec(prevTime);
-		time = prevTime;*/
-		
-		timePerBeat = 1000;//(long) 681;//(long) bpm*60/1000;
+		timePerBeat = 1000;
 		
 	}
 
@@ -115,6 +151,21 @@ public class LAppLive2DManager
 			time += warpedTime;
 			prevTime = currTime;
 			UtSystem.setUserTimeMSec(time);
+		}
+		
+		if (isUpdateModel) {
+			isUpdateModel = false;
+			
+			releaseModel();
+			
+			try {
+				model.load(gl, modelPath, isDefaultModel);
+				
+			} catch (Exception e) {
+				Log.e(TAG,"Failed to load.");
+				activity.displayError();
+				setDefaultModelPath();
+			}
 		}
 	}
 
@@ -222,22 +273,6 @@ public class LAppLive2DManager
 	{
 		if(LAppDefine.DEBUG_LOG)Log.d(TAG, "tapEvent view x:"+x+" y:"+y);
 		model.startRandomMotion(LAppDefine.MOTION_GROUP_IDLE, LAppDefine.PRIORITY_NORMAL );
-
-		/*
-		for (int i=0; i<models.size(); i++)
-		{
-			if(models.get(i).hitTest(  LAppDefine.HIT_AREA_HEAD,x, y ))
-			{
-				// é¡”ã‚’ã‚¿ãƒƒãƒ—ã?—ã?Ÿã‚‰è¡¨æƒ…åˆ‡ã‚Šæ›¿ã?ˆ
-				if(LAppDefine.DEBUG_LOG)Log.d(TAG, "Tap face.");
-				models.get(i).setRandomExpression();
-			}
-			else if(models.get(i).hitTest( LAppDefine.HIT_AREA_BODY,x, y))
-			{
-				if(LAppDefine.DEBUG_LOG)Log.d(TAG, "Tap body.");
-				models.get(i).startRandomMotion(LAppDefine.MOTION_GROUP_TAP_BODY, LAppDefine.PRIORITY_NORMAL );
-			}
-		}*/
 		return true;
 	}
 
@@ -255,16 +290,6 @@ public class LAppLive2DManager
 	public void flickEvent(float x,float y)
 	{
 		if(LAppDefine.DEBUG_LOG)Log.d(TAG, "flick x:"+x+" y:"+y);
-
-		/*
-		for (int i=0; i<models.size(); i++)
-		{
-			if(models.get(i).hitTest( LAppDefine.HIT_AREA_HEAD, x, y ))
-			{
-				if(LAppDefine.DEBUG_LOG)Log.d(TAG, "Flick head.");
-				models.get(i).startRandomMotion(LAppDefine.MOTION_GROUP_FLICK_HEAD, LAppDefine.PRIORITY_NORMAL );
-			}
-		}*/
 	}
 
 
@@ -274,12 +299,6 @@ public class LAppLive2DManager
 	public void maxScaleEvent()
 	{
 		if(LAppDefine.DEBUG_LOG)Log.d(TAG, "Max scale event.");
-
-		/*
-		for (int i=0; i<models.size(); i++)
-		{
-			models.get(i).startRandomMotion(LAppDefine.MOTION_GROUP_PINCH_IN,LAppDefine.PRIORITY_NORMAL );
-		}*/
 	}
 
 

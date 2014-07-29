@@ -15,7 +15,7 @@ import android.os.Environment;
 public class LAppDefine
 {
 	// ãƒ‡ãƒ?ãƒƒã‚°ã€‚trueã?®ã?¨ã??ã?«ãƒ­ã‚°ã‚’è¡¨ç¤ºã?™ã‚‹ã€‚
-	public static boolean DEBUG_LOG=true;
+	public static boolean DEBUG_LOG=false;
 	public static boolean DEBUG_DRAW_HIT_AREA=false;
 
 
@@ -46,11 +46,13 @@ public class LAppDefine
 	public static final String BACK_IMAGE_NAME = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/back_class_normal.png";//"image/back_class_normal.png" ;
 
 	//  ãƒ¢ãƒ‡ãƒ«å®šç¾©----------------------------------------------------------------------------------------------------
-	public static final String MODEL_HARU		= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/miku.model.json";// "live2d/haru/haru.model.json";
-	public static final String MODEL_HARU_A		= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/miku.model.json";//"live2d/haru/haru_01.model.json";
-	public static final String MODEL_HARU_B		= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/miku.model.json";//"live2d/haru/haru_02.model.json";
-	public static final String MODEL_SHIZUKU	= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/miku.model.json";//"live2d/shizuku/shizuku.model.json";
-	public static final String MODEL_WANKO 		= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/miku.model.json";//"live2d/wanko/wanko.model.json";
+	public static final String MODEL_HARU		= "live2d/haru/haru.model.json";
+	public static final String MODEL_HARU_A		= "live2d/haru/haru_01.model.json";
+	public static final String MODEL_HARU_B		= "live2d/haru/haru_02.model.json";
+	public static final String MODEL_SHIZUKU	= "live2d/shizuku/shizuku.model.json";
+	public static final String MODEL_WANKO 		= "live2d/wanko/wanko.model.json";
+	
+	public static final String MODEL_MIKU 		= "live2d/miku/miku.model.json";
 
 	// å¤–éƒ¨å®šç¾©ãƒ•ã‚¡ã‚¤ãƒ«(json)ã?¨å?ˆã‚?ã?›ã‚‹
 	static final String MOTION_GROUP_IDLE		="idle";		// ã‚¢ã‚¤ãƒ‰ãƒªãƒ³ã‚°

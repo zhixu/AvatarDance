@@ -74,7 +74,8 @@ public class LAppModel extends L2DBaseModel
 	static FloatBuffer 				debugBufferVer = null ;
 	static FloatBuffer 				debugBufferColor = null ;
 	
-	private boolean isDance = true;
+	private DanceActivity activity;
+	private boolean isDance = false;
 
 	static Object lock = new Object() ;
 
@@ -82,6 +83,8 @@ public class LAppModel extends L2DBaseModel
 	{
 		super();
 
+		//activity = act;
+		
 		if(LAppDefine.DEBUG_LOG)
 		{
 			debugMode=true;
@@ -118,7 +121,7 @@ public class LAppModel extends L2DBaseModel
 	 * @param gl
 	 * @throws Exception
 	 */
-	public void load(GL10 gl,String modelSettingPath) throws Exception
+	public void load(GL10 gl,String modelSettingPath, boolean isDefaultModel) throws Exception
 	{
 		updating=true;
 		initialized=false;
@@ -131,9 +134,18 @@ public class LAppModel extends L2DBaseModel
 
 		try
 		{
-			InputStream in = new FileInputStream(modelSettingPath);//FileManager.open(modelSettingPath);
-			modelSetting = new ModelSettingJson(in);
-			in.close() ;
+			
+			if (isDefaultModel) {
+				FileManager.setAsset(true);
+				InputStream in = FileManager.open_asset(modelSettingPath);//activity.getApplicationContext().getAssets().open(modelSettingPath) ;
+				modelSetting = new ModelSettingJson(in);
+				in.close();
+			} else {
+				FileManager.setAsset(false);
+				InputStream in = new FileInputStream(modelSettingPath);//FileManager.open(modelSettingPath);
+				modelSetting = new ModelSettingJson(in);
+				in.close();
+			}
 		}
 		catch (IOException e)
 		{

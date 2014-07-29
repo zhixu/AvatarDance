@@ -11,5 +11,10 @@
     
     <string name="string_bpm">BPM</string>
     <string name="value_bpm">000</string>
+    
+    <string name="button_pick_avatar">Load JSON</string>
+    <string name="button_start">Start</string>
+    <string name="string_error">Please pick proper file format.</string>
+    <string name="button_background">Load BG</string>
 
 </resources>

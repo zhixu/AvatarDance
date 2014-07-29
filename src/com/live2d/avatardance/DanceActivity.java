@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
@@ -36,9 +37,11 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -49,6 +52,14 @@ import android.widget.Toast;
 public class DanceActivity extends Activity  {
 
 	static private final String TAG = "DANCE ACTIVITY";
+	final private Integer BROWSE_FILE_CODE = 1;
+	final private Integer BROWSE_SONG_CODE = 2;
+	final private Integer BROWSE_BG_CODE = 3;
+	
+	private Button buttonLoad;
+	private Button buttonStart;
+	private Button buttonBG;
+	private TextView textError;
 	
 	private ImageButton buttonPlay;
 	private ImageButton buttonBack;
@@ -72,6 +83,7 @@ public class DanceActivity extends Activity  {
 	private float currentSongBPM = -1;
 	
 	private LAppLive2DManager live2DMgr ;
+	private LAppView view;
 	static private Activity instance;
 	
 	//private Camera camera;
@@ -97,32 +109,102 @@ public class DanceActivity extends Activity  {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         
-        mp = new MediaPlayer();
-        songHistory = new Stack<Integer>();
-        
-        setupGUI();
-        
-        Intent intent = getIntent();
-        String playlistID = intent.getExtras().getString("playlistID");
-        String songPosition = intent.getExtras().getString("songPosition");
-        
-        setPlaylist(playlistID);
-        setSongIndex(songPosition);
-        setNewSong(currentSongIndex);
+        setupGUIAvatar();
       	
       	FileManager.init(this.getApplicationContext());
     }
 	
-	void setupGUI()
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == BROWSE_FILE_CODE) {
+			if (resultCode == RESULT_OK) {
+				Uri uri = data.getData();
+				String avatarJSON = uri.getPath();
+				
+				String s = avatarJSON.substring(0,avatarJSON.lastIndexOf("/") + 1);
+				String fileExt = avatarJSON.substring(avatarJSON.lastIndexOf("."), avatarJSON.length());
+				
+				if (fileExt.equals(".json")) {
+					textError.setVisibility(TextView.INVISIBLE);
+					live2DMgr.switchInputModel(avatarJSON);
+				} else {
+					Log.d(TAG, "file extention: " + fileExt);
+					textError.setVisibility(TextView.VISIBLE);
+				}
+			}
+			if (resultCode == RESULT_CANCELED) {	
+				textError.setVisibility(TextView.VISIBLE);
+			}
+		}
+		
+		if (requestCode == BROWSE_BG_CODE) {
+			if (resultCode == RESULT_OK) {
+				Uri uri = data.getData();
+				String avatarJSON = uri.getPath();
+			}
+			if (resultCode == RESULT_CANCELED) {	
+				textError.setVisibility(TextView.VISIBLE);
+			}
+		}
+		
+		if (requestCode == BROWSE_SONG_CODE) {
+			if (resultCode == RESULT_OK) {
+				String playlistID = data.getExtras().getString("playlistID");
+		        String songPosition = data.getExtras().getString("songPosition");
+		        
+		        setPlaylist(playlistID);
+		        setSongIndex(songPosition);
+		        setNewSong(currentSongIndex);
+		        
+		        live2DMgr.danceStart();
+			}
+			if (resultCode == RESULT_CANCELED) {
+				textError.setText("Error has occurred with song selection.");
+				textError.setVisibility(TextView.VISIBLE);
+			}
+		}
+		
+	}
+	
+	public void displayError() {
+		//textError.setVisibility(TextView.VISIBLE);
+	}
+	
+	void setupGUIAvatar() {
+		setContentView(R.layout.activity_avatar);
+		
+		view = live2DMgr.createView(this) ;
+		
+		FrameLayout layout=(FrameLayout) findViewById(R.id.live2DLayout);
+		layout.addView(view, 0, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		findViewById(R.id.layout_avatar).bringToFront();
+		
+		buttonLoad = (Button) findViewById(R.id.button_load);
+		ButtonLoadListener buttonLoadListener = new ButtonLoadListener();
+		buttonLoad.setOnClickListener(buttonLoadListener);
+		
+		buttonStart = (Button) findViewById(R.id.button_start);
+		ButtonStartListener buttonStartListener = new ButtonStartListener();
+		buttonStart.setOnClickListener(buttonStartListener);
+		
+		buttonBG = (Button) findViewById(R.id.button_background);
+		ButtonBGListener buttonBGListener = new ButtonBGListener();
+		buttonBG.setOnClickListener(buttonBGListener);
+
+		textError = (TextView) findViewById(R.id.text_error);
+		textError.setVisibility(TextView.INVISIBLE);
+	}
+	
+	void setupGUIDance()
 	{
 		setContentView(R.layout.activity_dance);
 		
+		mp = new MediaPlayer();
+        songHistory = new Stack<Integer>();
+		
 		//setting up camera
 		//initializeCamera();
-		
-        LAppView view = live2DMgr.createView(this) ;
 
-        FrameLayout layout=(FrameLayout) findViewById(R.id.live2DLayout);
+        FrameLayout layout=(FrameLayout) findViewById(R.id.live2DLayout2);
 		layout.addView(view, 0, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		findViewById(R.id.controls).bringToFront();
 		
@@ -153,8 +235,6 @@ public class DanceActivity extends Activity  {
 		buttonDown.setOnTouchListener(buttonDownListener);
 		
 		valueBPM = (TextView) findViewById(R.id.value_bpm);
-		//int bpm = (int) currentSongBPM;
-		//valueBPM.setText(Integer.toString(bpm));
 	}
 	
 	public void setPlaylist(String playlistID) {
@@ -250,6 +330,46 @@ public class DanceActivity extends Activity  {
 		live2DMgr.danceSetBPM(_bpm);
 	}
 	
+	class ButtonBGListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			Uri path = Uri.fromFile(Environment.getExternalStorageDirectory());
+			
+			Intent intent = new Intent();
+			intent.setAction(Intent.ACTION_GET_CONTENT);
+			intent.setDataAndType(path, "application/json");
+			startActivityForResult(intent, BROWSE_BG_CODE);
+		}
+	}
+	
+	// retrieves URI for avatar .json file
+	class ButtonLoadListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			Uri path = Uri.fromFile(Environment.getExternalStorageDirectory());
+			
+			Intent intent = new Intent();
+			intent.setAction(Intent.ACTION_GET_CONTENT);
+			intent.setDataAndType(path, "application/json");
+			startActivityForResult(intent, BROWSE_FILE_CODE);
+		}
+	}
+	
+	class ButtonStartListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			Intent i = new Intent(DanceActivity.this, PlaylistActivity.class);
+			ViewGroup parent = (ViewGroup) view.getParent();
+			startActivityForResult(i,BROWSE_SONG_CODE);
+			parent.removeView(view);
+			setupGUIDance();
+		}
+		
+	}
+	
 	class ButtonPlayListener implements OnClickListener{
 
 		@Override
@@ -328,7 +448,6 @@ public class DanceActivity extends Activity  {
 				view.setVisibility(View.VISIBLE);
 			}
 		}
-		
 	}
 	
 	class ButtonUpListener implements OnClickListener, OnTouchListener {
@@ -352,7 +471,6 @@ public class DanceActivity extends Activity  {
 			
 			return true;
 		}
-		
 	}
 	
 	class ButtonDownListener implements OnClickListener, OnTouchListener {
@@ -416,6 +534,8 @@ public class DanceActivity extends Activity  {
 
 	protected void onDestroy() {
 		super.onDestroy();
-		mp.release();
+		if (mp != null) {
+			mp.release();
+		}
 	}
 }

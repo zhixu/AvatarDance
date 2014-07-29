@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@drawable/music_background"
     android:orientation="vertical" >
 
     <TextView
@@ -9,13 +10,10 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <View
-        android:id="@+id/statsLine"
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
+        android:textStyle="bold"
+        android:padding="10dp"
+        android:textColor="@color/gray"
+        android:background="@color/green" />
 
     <ListView
         android:id="@android:id/list"
