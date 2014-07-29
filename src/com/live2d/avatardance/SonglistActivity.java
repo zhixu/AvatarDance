@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,20 +23,44 @@ import android.widget.TextView;
 public class SonglistActivity extends ListActivity {
 	
 	String playlistID;
-
+	TextView title;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		setContentView(R.layout.activity_songlist);
+		TextView title = (TextView) findViewById(R.id.songlist_title);
 		
 		Intent intent = getIntent();
 		playlistID = intent.getExtras().getString("playlistID");
-
-		TextView title = (TextView) findViewById(R.id.songlist_title);
 		title.setText(intent.getExtras().getString("name"));
-
+		
+		setupUI();
+		
+		
+	}
+	
+	protected void onNewIntent(Intent intent) {
+		if (intent.hasExtra("playlistID") && intent.hasExtra("name")) {
+			TextView title = (TextView) findViewById(R.id.songlist_title);
+			title.setText(intent.getExtras().getString("name"));
+			setupUI();
+		}
+	}
+	
+	public void onBackPressed() {
+		DanceActivity.a.finish();
+		
+		Intent i = new Intent(this, DanceActivity.class);
+		//i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		startActivity(i);
+		finish();
+	}
+	
+	private void setupUI() {
+		
 		Cursor cursor;
 		ContentResolver cr = this.getContentResolver();
 		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
@@ -92,14 +117,16 @@ public class SonglistActivity extends ListActivity {
 		ListView view = getListView(); // (ListView)
 										// findViewById(R.id.songlist);
 		view.setAdapter(adapter);
-		
 	}
+	
 	
 	protected void onListItemClick(ListView listView, View view, int position,
 			long id) {
 		super.onListItemClick(listView, view, position, id);
 
-		Intent i = new Intent();
+		Intent i = new Intent(this, DanceActivity.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		Log.d("DANCE ACTIVITY", "adding reorder flag");
 		i.putExtra("playlistID", playlistID);
 		
 		if (position == 0) {
@@ -107,9 +134,11 @@ public class SonglistActivity extends ListActivity {
 		} else {
 			i.putExtra("songPosition", Integer.toString(position-1));
 		}
+		
+		startActivity(i);
 
-		setResult(RESULT_OK, i);
-		finish();
+		//setResult(RESULT_OK, i);
+		//finish();
 	}
 
 	@Override

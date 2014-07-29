@@ -49,13 +49,13 @@ public final class R {
         public static final int action_settings=0x7f090017;
         public static final int artist=0x7f090016;
         public static final int button_back=0x7f09000f;
-        public static final int button_background=0x7f090005;
+        public static final int button_background=0x7f090003;
         public static final int button_down=0x7f09000e;
         public static final int button_forward=0x7f090011;
-        public static final int button_load=0x7f090004;
+        public static final int button_load=0x7f090002;
         public static final int button_menu=0x7f090008;
         public static final int button_play=0x7f090010;
-        public static final int button_start=0x7f090003;
+        public static final int button_start=0x7f090004;
         public static final int button_up=0x7f09000b;
         public static final int controls=0x7f090009;
         public static final int layout_avatar=0x7f090001;
@@ -67,7 +67,7 @@ public final class R {
         public static final int playlist_title=0x7f090012;
         public static final int songlist_title=0x7f090013;
         public static final int string_BPM=0x7f09000c;
-        public static final int text_error=0x7f090002;
+        public static final int text_error=0x7f090005;
         public static final int title=0x7f090015;
         public static final int value_bpm=0x7f09000d;
     }

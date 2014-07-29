@@ -137,12 +137,12 @@ public class LAppModel extends L2DBaseModel
 			
 			if (isDefaultModel) {
 				FileManager.setAsset(true);
-				InputStream in = FileManager.open_asset(modelSettingPath);//activity.getApplicationContext().getAssets().open(modelSettingPath) ;
+				InputStream in = FileManager.open_asset(modelSettingPath);
 				modelSetting = new ModelSettingJson(in);
 				in.close();
 			} else {
 				FileManager.setAsset(false);
-				InputStream in = new FileInputStream(modelSettingPath);//FileManager.open(modelSettingPath);
+				InputStream in = new FileInputStream(modelSettingPath);
 				modelSetting = new ModelSettingJson(in);
 				in.close();
 			}

@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,8 @@ public class PlaylistActivity extends ListActivity {
 	private HashMap<String, String> playlists;
 
 	private ArrayList<String> playlistN;
+	
+	private boolean firstTimeCall = true;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +90,16 @@ public class PlaylistActivity extends ListActivity {
 		Intent i = new Intent(this, SonglistActivity.class);
 		i.putExtra("playlistID", playlistID);
 		i.putExtra("name", name);
-		i.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		if(!firstTimeCall) {
+			Log.d("TAG", "not first time call");
+			i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		} else {
+			firstTimeCall = false;
+		}
+		
 		startActivity(i);
-		finish();
+		//finish();
 	}
 
 	@Override

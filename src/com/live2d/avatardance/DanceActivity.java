@@ -52,6 +52,9 @@ import android.widget.Toast;
 public class DanceActivity extends Activity  {
 
 	static private final String TAG = "DANCE ACTIVITY";
+	
+	public static DanceActivity a;
+	
 	final private Integer BROWSE_FILE_CODE = 1;
 	final private Integer BROWSE_SONG_CODE = 2;
 	final private Integer BROWSE_BG_CODE = 3;
@@ -108,11 +111,34 @@ public class DanceActivity extends Activity  {
 	{
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+     
+        a = this;
+        
+        Log.d(TAG, "ON CREATE CALLED");
         
         setupGUIAvatar();
       	
       	FileManager.init(this.getApplicationContext());
     }
+	
+	public void onNewIntent(Intent intent) {
+		Log.d(TAG, "NEW INTENT FUNCTION CALLED");
+		
+		String playlistID = intent.getExtras().getString("playlistID");
+        String songPosition = intent.getExtras().getString("songPosition");
+        
+        setPlaylist(playlistID);
+        setSongIndex(songPosition);
+        setNewSong(currentSongIndex);
+        
+        live2DMgr.danceStart();
+	}
+	
+	public void onBackPressed() {
+		Intent i = new Intent(this, SonglistActivity.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		startActivity(i);
+	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == BROWSE_FILE_CODE) {
