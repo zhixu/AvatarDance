@@ -64,7 +64,7 @@ public class LAppLive2DManager
 			Log.d(TAG, modelURI);
 			
 			if (modelURI.equals("miku")) {
-				model.load(gl, LAppDefine.MODEL_HARU, true);
+				model.load(gl, LAppDefine.MODEL_MIKU, true);
 			} else {
 				model.load(gl, modelURI, false);
 			}

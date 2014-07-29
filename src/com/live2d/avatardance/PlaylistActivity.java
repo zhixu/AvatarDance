@@ -30,12 +30,10 @@ public class PlaylistActivity extends ListActivity {
 	final Integer PLAYLIST_ACTIVITY = 1;
 	final Integer BROWSE_PLAYLIST_CODE = 1;
 
-	private TextView playlistName;
 	private HashMap<String, String> playlists;
 
 	private ArrayList<String> playlistN;
 	
-	private boolean firstTimeCall = true;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +68,6 @@ public class PlaylistActivity extends ListActivity {
 			cursor.moveToNext();
 		}
 
-		playlistName = (TextView) findViewById(R.id.playlist_name);
-
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 				R.layout.playlist_row_item, playlistN);
 
@@ -91,15 +87,17 @@ public class PlaylistActivity extends ListActivity {
 		i.putExtra("playlistID", playlistID);
 		i.putExtra("name", name);
 		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-		if(!firstTimeCall) {
-			Log.d("TAG", "not first time call");
-			i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-		} else {
-			firstTimeCall = false;
-		}
-		
+
 		startActivity(i);
 		//finish();
+	}
+	
+	public void onBackPressed() {
+		DanceActivity.a.finish();
+		
+		Intent i = new Intent(this, DanceActivity.class);
+		startActivity(i);
+		finish();
 	}
 
 	@Override

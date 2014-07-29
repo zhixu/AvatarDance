@@ -43,7 +43,7 @@ public class LAppDefine
 	public static final String MODEL_SHIZUKU	= "live2d/shizuku/shizuku.model.json";
 	public static final String MODEL_WANKO 		= "live2d/wanko/wanko.model.json";
 	*/
-	public static final String BACK_IMAGE_NAME = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/back_class_normal.png";//"image/back_class_normal.png" ;
+	public static final String BACK_IMAGE_NAME = "image/back_class_normal.png" ;
 
 	//  モデル定義----------------------------------------------------------------------------------------------------
 	public static final String MODEL_HARU		= "live2d/haru/haru.model.json";

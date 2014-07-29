@@ -114,15 +114,12 @@ public class DanceActivity extends Activity  {
      
         a = this;
         
-        Log.d(TAG, "ON CREATE CALLED");
-        
         setupGUIAvatar();
       	
       	FileManager.init(this.getApplicationContext());
     }
 	
 	public void onNewIntent(Intent intent) {
-		Log.d(TAG, "NEW INTENT FUNCTION CALLED");
 		
 		String playlistID = intent.getExtras().getString("playlistID");
         String songPosition = intent.getExtras().getString("songPosition");

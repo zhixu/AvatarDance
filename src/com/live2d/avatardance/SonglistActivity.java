@@ -50,14 +50,7 @@ public class SonglistActivity extends ListActivity {
 		}
 	}
 	
-	public void onBackPressed() {
-		DanceActivity.a.finish();
-		
-		Intent i = new Intent(this, DanceActivity.class);
-		//i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-		startActivity(i);
-		finish();
-	}
+
 	
 	private void setupUI() {
 		
@@ -139,6 +132,14 @@ public class SonglistActivity extends ListActivity {
 
 		//setResult(RESULT_OK, i);
 		//finish();
+	}
+	
+	public void onBackPressed() {
+
+		Intent i = new Intent(this, DanceActivity.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		startActivity(i);
+		finish();
 	}
 
 	@Override
