@@ -64,6 +64,8 @@ public class DanceActivity extends Activity  {
 	private Button buttonLoad;
 	private Button buttonStart;
 	private Button buttonBG;
+	private ImageButton buttonAvatarBack;
+	private ImageButton buttonAvatarFwd;
 	private TextView textError;
 	
 	private ImageButton buttonPlay;
@@ -90,12 +92,6 @@ public class DanceActivity extends Activity  {
 	private LAppLive2DManager live2DMgr ;
 	private LAppView view;
 	static private Activity instance;
-	
-	//private Camera camera;
-	//private CameraActivity cameraActivity;
-	//private SurfaceTexture surface;
-	
-	private Live2DMotion motion;
 
 	public DanceActivity( )
 	{
@@ -189,10 +185,6 @@ public class DanceActivity extends Activity  {
 		
 	}
 	
-	public void displayError() {
-		//textError.setVisibility(TextView.VISIBLE);
-	}
-	
 	void setupGUIAvatar() {
 		setContentView(R.layout.activity_avatar);
 		
@@ -213,6 +205,14 @@ public class DanceActivity extends Activity  {
 		buttonBG = (Button) findViewById(R.id.button_background);
 		ButtonBGListener buttonBGListener = new ButtonBGListener();
 		buttonBG.setOnClickListener(buttonBGListener);
+		
+		buttonAvatarBack = (ImageButton) findViewById(R.id.avatar_back);
+		ButtonABackListener buttonABackListener = new ButtonABackListener();
+		buttonAvatarBack.setOnClickListener(buttonABackListener);
+		
+		buttonAvatarFwd = (ImageButton) findViewById(R.id.avatar_fwd);
+		ButtonAFwdListener buttonAFwdListener = new ButtonAFwdListener();
+		buttonAvatarFwd.setOnClickListener(buttonAFwdListener);
 
 		textError = (TextView) findViewById(R.id.text_error);
 		textError.setVisibility(TextView.INVISIBLE);
@@ -365,6 +365,27 @@ public class DanceActivity extends Activity  {
 			intent.setDataAndType(path, "image/*");
 			startActivityForResult(intent, BROWSE_BG_CODE);
 		}
+	}
+	
+	class ButtonABackListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			live2DMgr.switchDefaultModel(true);
+		}
+		
+	}
+	
+	class ButtonAFwdListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			live2DMgr.switchDefaultModel(false);
+			
+		}
+		
 	}
 	
 	// retrieves URI for avatar .json file

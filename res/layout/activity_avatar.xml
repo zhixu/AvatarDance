@@ -7,51 +7,91 @@
     <FrameLayout
         android:id="@+id/live2DLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true" >
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/layout_avatar"
             android:layout_width="match_parent"
-        	android:layout_height="match_parent"
-        	android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/button_load"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/button_green"
-                android:padding="5dp"
-                android:text="@string/button_pick_avatar"
-                android:textColor="@color/gray" />
-
-            <Button
-                android:id="@+id/button_background"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/button_green"
-                android:padding="5dp"
-                android:text="@string/button_background"
-                android:textColor="@color/gray" />
+        	android:layout_height="match_parent">
             
-            <Button
-		        android:id="@+id/button_start"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_weight="1"
-		        android:layout_margin="5dp"
-		        android:background="@drawable/button_green"
-		        android:padding="5dp"
-		        android:text="@string/button_start"
-		        android:textColor="@color/gray" />
+            <ImageButton 
+                android:id="@+id/avatar_fwd"
+                android:layout_width="30dp"
+		        android:layout_height="30dp"
+		        android:layout_marginRight="10dp"
+		        android:layout_alignParentRight="true"
+		        android:layout_centerVertical="true"
+                android:background="@drawable/avatar_fwd"/>
             
+            <ImageButton
+		        android:id="@+id/avatar_back"
+		        android:layout_width="30dp"
+		        android:layout_height="30dp"
+		        android:layout_marginLeft="10dp"
+		        android:layout_alignParentLeft="true"
+		        android:layout_centerVertical="true"
+		        android:background="@drawable/avatar_back" />
+        
+	        <LinearLayout
+	            android:id="@+id/layout_avatar_buttons"
+	            android:layout_width="match_parent"
+	        	android:layout_height="wrap_content"
+	        	android:orientation="horizontal"
+	        	android:background="@color/beige">
+	
+	            <Button
+	                android:id="@+id/button_load"
+	                android:layout_width="match_parent"
+	                android:layout_height="match_parent"
+	                android:layout_margin="5dp"
+	                android:layout_weight="1"
+	                android:background="@drawable/button_green"
+	                android:padding="5dp"
+	                android:text="@string/button_pick_avatar"
+	                android:textColor="@color/beige" />
+	
+	            <Button
+	                android:id="@+id/button_background"
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_margin="5dp"
+	                android:layout_weight="1"
+	                android:background="@drawable/button_green"
+	                android:padding="5dp"
+	                android:text="@string/button_background"
+	                android:textColor="@color/beige" />
+	            
+	            <Button
+			        android:id="@+id/button_start"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_weight="1"
+			        android:layout_margin="5dp"
+			        android:background="@drawable/button_green"
+			        android:padding="5dp"
+			        android:text="@string/button_start"
+			        android:textColor="@color/beige" />
+	            
+	
+		    </LinearLayout>
 
-	    </LinearLayout>
+	        <TextView
+	            android:id="@+id/text_pick_avatar"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentBottom="true"
+	            android:layout_centerHorizontal="true"
+				android:gravity="center"
+				android:padding="10dp"
+	            android:textSize="24sp"
+        		android:textStyle="bold"
+	            android:text="Pick Avatar"
+	            android:textColor="@color/green"
+	            android:background="@color/beige" />
+
+	    </RelativeLayout>
 	    
 	 </FrameLayout>
 
@@ -63,5 +103,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="72dp"
         android:text="@string/string_error" />
+
+    
 
 </RelativeLayout>

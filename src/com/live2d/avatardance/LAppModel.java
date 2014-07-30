@@ -156,13 +156,14 @@ public class LAppModel extends L2DBaseModel
 		{
 			
 			if (isDefaultModel) {
+				
 				FileManager.setAsset(true);
 				InputStream in = FileManager.open_asset(modelSettingPath);
 				modelSetting = new ModelSettingJson(in);
 				in.close();
 			} else {
 				FileManager.setAsset(false);
-				InputStream in = new FileInputStream(modelSettingPath);
+				InputStream in = FileManager.open_background(modelSettingPath, false);
 				modelSetting = new ModelSettingJson(in);
 				in.close();
 			}

@@ -46,6 +46,7 @@ public class LAppLive2DManager
 		activity = act;
 		
 		model = new LAppModel();
+		modelPath = LAppDefine.MODEL_WANKO;
 		
 		time = 0;
 		prevTime = 0;
@@ -54,36 +55,30 @@ public class LAppLive2DManager
 	public void loadModel(GL10 gl) {
 		try {
 			
-			String modelURI = "miku";
-			
-			if (modelPath != null) {
-				modelURI = modelPath;
-			}
-			
-			Log.d(TAG, modelURI);
-			
-			if (modelURI.equals("miku")) {
-				model.load(gl, LAppDefine.MODEL_WANKO, true);
-			} else {
-				model.load(gl, modelURI, false);
-			}
-			
+			model.load(gl, modelPath, isDefaultModel);
 			model.feedIn();
 			
 		} catch (Exception e) {
 				Log.e(TAG,"Failed to load.");
-				activity.displayError();
 				//DanceActivity.exit();
 		}
 	}
 	
-	public void switchDefaultModel() {
+	public void switchDefaultModel(boolean isFwd) {
 		isDefaultModel = true;
 		
-		if (modelNum < 1) {
-			modelNum++;
+		if (isFwd) {
+			if (modelNum < 1) {
+				modelNum++;
+			} else {
+				modelNum = 0;
+			}
 		} else {
-			modelNum = 0;
+			if (modelNum > 0) {
+				modelNum--;
+			} else {
+				modelNum = 1;
+			}
 		}
 		
 		setDefaultModelPath();
@@ -165,7 +160,7 @@ public class LAppLive2DManager
 				
 			} catch (Exception e) {
 				Log.e(TAG,"Failed to load.");
-				activity.displayError();
+				//activity.displayError();
 				setDefaultModelPath();
 			}
 		}
