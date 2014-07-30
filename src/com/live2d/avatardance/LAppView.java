@@ -7,6 +7,8 @@
  */
 package com.live2d.avatardance;
 
+import java.io.InputStream;
+
 import jp.live2d.framework.L2DMatrix44;
 import jp.live2d.framework.L2DTargetPoint;
 import jp.live2d.framework.L2DViewMatrix;
@@ -16,6 +18,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
+import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Environment;
 import android.util.Log;
@@ -97,7 +100,7 @@ public class LAppView extends GLSurfaceView {
 		dragMgr  = new L2DTargetPoint();
 	}
 	
-	public void setBackground(String path) {
+	public void setBackground(Uri path) {
 		renderer.setBackground(path);
 	}
 

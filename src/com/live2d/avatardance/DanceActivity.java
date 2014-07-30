@@ -1,6 +1,8 @@
 package com.live2d.avatardance;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
@@ -122,6 +124,7 @@ public class DanceActivity extends Activity  {
 	public void onNewIntent(Intent intent) {
 		
 		if (intent.hasExtra("playlistID") && intent.hasExtra("songPosition")) {
+			
 			String playlistID = intent.getExtras().getString("playlistID");
 	        String songPosition = intent.getExtras().getString("songPosition");
 	        
@@ -129,14 +132,10 @@ public class DanceActivity extends Activity  {
 	        setSongIndex(songPosition);
 	        setNewSong(currentSongIndex);
 	        
-	        live2DMgr.danceStart();
+	        if (isPlaying) {
+	        	live2DMgr.danceStart();
+	        }
 		}
-	}
-	
-	public void onBackPressed() {
-		Intent i = new Intent(this, SonglistActivity.class);
-		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-		startActivity(i);
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -163,15 +162,10 @@ public class DanceActivity extends Activity  {
 		if (requestCode == BROWSE_BG_CODE) {
 			if (resultCode == RESULT_OK) {
 				
-				Log.d(TAG, "background url recieved");
-				
 				Uri uri = data.getData();
-				String bgPath= uri.getPath();
-				
-				view.setBackground(bgPath);
+				view.setBackground(uri);
 			}
 			if (resultCode == RESULT_CANCELED) {	
-				Log.d(TAG, "background url canceled");
 				textError.setVisibility(TextView.VISIBLE);
 			}
 		}
@@ -471,10 +465,8 @@ public class DanceActivity extends Activity  {
 			RelativeLayout view = (RelativeLayout) findViewById(R.id.controls);
 			
 			if (view.getVisibility() == View.VISIBLE){
-				Log.d(TAG, "setting view invisible");
 				view.setVisibility(View.INVISIBLE);
 			} else if (view.getVisibility() == View.INVISIBLE){
-				Log.d(TAG, "setting view visible");
 				view.setVisibility(View.VISIBLE);
 			}
 		}
@@ -518,8 +510,7 @@ public class DanceActivity extends Activity  {
 
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
-			
-			Log.d(TAG, "on long click called");
+
 			if (currentSongBPM > 0) {
 				currentSongBPM--;
 				live2DMgr.danceSetBPM(currentSongBPM);

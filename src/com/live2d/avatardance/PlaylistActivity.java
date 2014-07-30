@@ -89,7 +89,6 @@ public class PlaylistActivity extends ListActivity {
 		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 
 		startActivity(i);
-		//finish();
 	}
 	
 	public void onBackPressed() {

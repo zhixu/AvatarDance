@@ -12,8 +12,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.net.Uri;
+import android.widget.TextView;
 
 public class FileManager {
 	static Context context ;
@@ -45,6 +48,18 @@ public class FileManager {
 		} else {
 			return open_asset(path);
 		}
+	}
+	
+	public static InputStream open_background(Uri uri) {
+		try {
+			ContentResolver cr = context.getContentResolver();
+			InputStream in = cr.openInputStream(uri);
+			return in;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 	
 	public static InputStream open_background (String path, boolean isAsset) throws IOException {

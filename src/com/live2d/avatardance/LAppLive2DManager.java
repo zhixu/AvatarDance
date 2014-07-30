@@ -63,7 +63,7 @@ public class LAppLive2DManager
 			Log.d(TAG, modelURI);
 			
 			if (modelURI.equals("miku")) {
-				model.load(gl, LAppDefine.MODEL_MIKU, true);
+				model.load(gl, LAppDefine.MODEL_WANKO, true);
 			} else {
 				model.load(gl, modelURI, false);
 			}
@@ -95,6 +95,9 @@ public class LAppLive2DManager
 		switch (modelNum) {
 		case 0:
 			modelPath = LAppDefine.MODEL_MIKU;
+			break;
+		case 1:
+			modelPath = LAppDefine.MODEL_WANKO;
 			break;
 		}
 	}
@@ -269,21 +272,12 @@ public class LAppLive2DManager
 	public boolean tapEvent(float x,float y)
 	{
 		if(LAppDefine.DEBUG_LOG)Log.d(TAG, "tapEvent view x:"+x+" y:"+y);
-		model.startRandomMotion(LAppDefine.MOTION_GROUP_IDLE, LAppDefine.PRIORITY_NORMAL );
+		//model.startRandomMotion(LAppDefine.MOTION_GROUP_IDLE, LAppDefine.PRIORITY_NORMAL );
+		model.switchDance();
+		
 		return true;
 	}
 
-
-	/*
-	 * ãƒ•ãƒªãƒƒã‚¯ã?—ã?Ÿæ™‚ã?®ã‚¤ãƒ™ãƒ³ãƒˆ
-	 *
-	 * LAppViewå?´ã?§ãƒ•ãƒªãƒƒã‚¯ã‚¤ãƒ™ãƒ³ãƒˆã‚’æ„ŸçŸ¥ã?—ã?Ÿæ™‚ã?«å‘¼ã?°ã‚Œ
-	 * ãƒ•ãƒªãƒƒã‚¯æ™‚ã?®ãƒ¢ãƒ‡ãƒ«ã?®å‹•ã??ã‚’é–‹å§‹ã?—ã?¾ã?™ã€‚
-	 *
-	 * @param
-	 * @param
-	 * @param flickDist
-	 */
 	public void flickEvent(float x,float y)
 	{
 		if(LAppDefine.DEBUG_LOG)Log.d(TAG, "flick x:"+x+" y:"+y);

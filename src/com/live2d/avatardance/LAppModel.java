@@ -76,6 +76,8 @@ public class LAppModel extends L2DBaseModel
 	
 	private DanceActivity activity;
 	private boolean isDance = false;
+	
+	private int danceNumber = 0;
 
 	static Object lock = new Object() ;
 
@@ -107,7 +109,25 @@ public class LAppModel extends L2DBaseModel
 		isDance = true;
 		mainMotionManager.resetPriority();
 		mainMotionManager.setReservePriority(0);
-		startRandomMotion(LAppDefine.MOTION_GROUP_DANCE, LAppDefine.PRIORITY_IDLE);
+		
+		int max=modelSetting.getMotionNum(LAppDefine.MOTION_GROUP_DANCE);
+		danceNumber=(int)(Math.random() * max);
+		
+		startMotion(LAppDefine.MOTION_GROUP_DANCE, danceNumber, LAppDefine.PRIORITY_IDLE);
+	}
+	
+	public void switchDance() {
+		mainMotionManager.resetPriority();
+		mainMotionManager.setReservePriority(0);
+		
+		int max=modelSetting.getMotionNum(LAppDefine.MOTION_GROUP_DANCE);
+		if (danceNumber < max-1) {
+			danceNumber++;
+		} else {
+			danceNumber = 0;
+		}
+		
+		Log.d(TAG, "dance max: " + max + " dance number: " + danceNumber);
 	}
 
 	public void danceStop() {
@@ -252,7 +272,7 @@ public class LAppModel extends L2DBaseModel
 			{
 				// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã?®å†?ç”Ÿã?Œã?ªã?„å ´å?ˆã€?å¾…æ©Ÿãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã?®ä¸­ã?‹ã‚‰ãƒ©ãƒ³ãƒ€ãƒ ã?§å†?ç”Ÿã?™ã‚‹
 				if (isDance) {
-					startRandomMotion(LAppDefine.MOTION_GROUP_DANCE, LAppDefine.PRIORITY_IDLE);
+					startMotion(LAppDefine.MOTION_GROUP_DANCE, danceNumber, LAppDefine.PRIORITY_IDLE);
 				} else {
 					startRandomMotion(LAppDefine.MOTION_GROUP_IDLE, LAppDefine.PRIORITY_IDLE);
 				}

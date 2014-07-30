@@ -45,10 +45,11 @@
 		        android:layout_height="wrap_content"
 		        android:layout_weight="1"
 		        android:layout_margin="5dp"
-		        android:background="@drawable/button_red"
+		        android:background="@drawable/button_green"
 		        android:padding="5dp"
 		        android:text="@string/button_start"
 		        android:textColor="@color/gray" />
+            
 
 	    </LinearLayout>
 	    

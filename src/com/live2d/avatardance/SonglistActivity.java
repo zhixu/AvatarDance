@@ -48,8 +48,6 @@ public class SonglistActivity extends ListActivity {
 		}
 	}
 	
-
-	
 	private void setupUI() {
 		
 		Cursor cursor;
@@ -110,6 +108,13 @@ public class SonglistActivity extends ListActivity {
 		view.setAdapter(adapter);
 	}
 	
+	public void onBackPressed() {
+
+		Intent i = new Intent(this, PlaylistActivity.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		startActivity(i);
+		finish();
+	}
 	
 	protected void onListItemClick(ListView listView, View view, int position,
 			long id) {
@@ -132,13 +137,7 @@ public class SonglistActivity extends ListActivity {
 		//finish();
 	}
 	
-	public void onBackPressed() {
-
-		Intent i = new Intent(this, DanceActivity.class);
-		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-		startActivity(i);
-		finish();
-	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
