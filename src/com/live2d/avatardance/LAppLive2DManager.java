@@ -32,7 +32,6 @@ public class LAppLive2DManager
 	
 	private int modelNum;
 	private String modelPath;
-	private boolean isDance = false;
 	private boolean isUpdateModel = false;
 	private boolean isDefaultModel = true;
 	private long time;
@@ -250,12 +249,10 @@ public class LAppLive2DManager
 	}*/
 
 	public void danceStop() {
-		isDance = false;
 		model.danceStop();
 	}
 	
 	public void danceStart() {
-		isDance = true;
 		model.danceStart();
 	}
 

@@ -43,7 +43,15 @@ public class FileManager {
 		if (!isAssets) {
 			return new FileInputStream(path);
 		} else {
-			return context.getAssets().open(path) ;
+			return open_asset(path);
+		}
+	}
+	
+	public static InputStream open_background (String path, boolean isAsset) throws IOException {
+		if (!isAsset) {
+			return new FileInputStream(path);
+		} else {
+			return open_asset(path);
 		}
 	}
 	
@@ -78,7 +86,6 @@ public class FileManager {
 		else{
 			return open_resource(path) ;
 		}
-
 	}
 
 

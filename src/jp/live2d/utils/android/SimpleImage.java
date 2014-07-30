@@ -16,7 +16,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 
 /*
- * 背景などの画像を表示する。
+ * èƒŒæ™¯ã�ªã�©ã�®ç”»åƒ�ã‚’è¡¨ç¤ºã�™ã‚‹ã€‚
  *
  */
 public class SimpleImage {
@@ -45,7 +45,7 @@ public class SimpleImage {
 			e.printStackTrace();
 		}
 
-		// 初期設定
+		// åˆ�æœŸè¨­å®š
 		this.uvLeft=0;
 		this.uvRight=1;
 		this.uvBottom=0;
@@ -55,6 +55,14 @@ public class SimpleImage {
 		this.imageRight=1;
 		this.imageBottom=-1;
 		this.imageTop=1;
+	}
+	
+	public void setTexture(GL10 gl, InputStream in) {
+		try {
+			texture=LoadUtil.loadTexture(gl, in, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 
@@ -76,7 +84,7 @@ public class SimpleImage {
 
 
 	/*
-	 * テクスチャの描画先の座標を設定(デフォルトは 0,0,1,1 に描かれる)
+	 * ãƒ†ã‚¯ã‚¹ãƒ�ãƒ£ã�®æ��ç”»å…ˆã�®åº§æ¨™ã‚’è¨­å®š(ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã�¯ 0,0,1,1 ã�«æ��ã�‹ã‚Œã‚‹)
 	 *
 	 * @param left
 	 * @param right
@@ -92,7 +100,7 @@ public class SimpleImage {
 
 
 	/*
-	 * テクスチャの使用範囲を設定（テクスチャは0..1座標）
+	 * ãƒ†ã‚¯ã‚¹ãƒ�ãƒ£ã�®ä½¿ç”¨ç¯„å›²ã‚’è¨­å®šï¼ˆãƒ†ã‚¯ã‚¹ãƒ�ãƒ£ã�¯0..1åº§æ¨™ï¼‰
 	 * @param left
 	 * @param right
 	 * @param bottom

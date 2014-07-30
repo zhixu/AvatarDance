@@ -38,8 +38,6 @@ public class SonglistActivity extends ListActivity {
 		title.setText(intent.getExtras().getString("name"));
 		
 		setupUI();
-		
-		
 	}
 	
 	protected void onNewIntent(Intent intent) {

@@ -17,6 +17,7 @@ import jp.live2d.utils.android.FileManager;
 import jp.live2d.utils.android.OffscreenImage;
 import jp.live2d.utils.android.SimpleImage;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 
 
 /*
@@ -28,6 +29,10 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 	private LAppLive2DManager delegate;
 
 	private SimpleImage bg;// 背景の描画
+	
+	private boolean isUpdateBG = false;
+	private boolean isAsset = true;
+	private String bgPath;
 
 	private float accelX=0;
 	private float accelY=0;
@@ -35,6 +40,7 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 
 	public LAppRenderer( LAppLive2DManager live2DMgr  ){
 		this.delegate = live2DMgr ;
+		bgPath = LAppDefine.BACK_IMAGE_NAME;
 	}
 
 
@@ -47,7 +53,12 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 		setupBackground(context);
 		delegate.loadModel(context);
 	}
-
+	
+	public void setBackground(String path) {
+		isUpdateBG = true;
+		isAsset = false;
+		bgPath = path;
+	}
 
 	/*
 	 * OpenGL画面の変更時に呼ばれるイベント。
@@ -59,7 +70,6 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 
 		// OpenGL 初期化処理
 		gl.glViewport(0, 0, width ,height);
-
 
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
@@ -77,7 +87,6 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);// 背景色
 
-
 		OffscreenImage.createFrameBuffer(gl, width ,height, 0);
 	    return ;
 	}
@@ -93,6 +102,20 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 
 		// ポリゴン等を描画します
 		delegate.update(gl);
+		
+		if (isUpdateBG) {
+			isUpdateBG = false;
+			
+			try {
+
+				//FileManager.setAsset(false);
+				InputStream in = FileManager.open_background(bgPath, isAsset);
+				bg.setTexture(gl, in);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
 		// OpenGL 設定
 		// 画面への変換行列を適用
@@ -169,7 +192,7 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 	 */
 	private void setupBackground(GL10 context) {
 		try {
-			InputStream in = FileManager.open(LAppDefine.BACK_IMAGE_NAME);
+			InputStream in = FileManager.open_background(bgPath, isAsset);
 			bg=new SimpleImage(context,in);
 			// 描画範囲。画面の最大表示範囲に合わせる
 			bg.setDrawRect(
@@ -180,6 +203,7 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 
 			// 画像を使用する範囲(uv)
 			bg.setUVRect(0.0f,1.0f,0.0f,1.0f);
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

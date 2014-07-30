@@ -96,6 +96,10 @@ public class LAppView extends GLSurfaceView {
 
 		dragMgr  = new L2DTargetPoint();
 	}
+	
+	public void setBackground(String path) {
+		renderer.setBackground(path);
+	}
 
 
 	public void startAccel(Activity activity)

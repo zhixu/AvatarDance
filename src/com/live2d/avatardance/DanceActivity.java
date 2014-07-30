@@ -121,14 +121,16 @@ public class DanceActivity extends Activity  {
 	
 	public void onNewIntent(Intent intent) {
 		
-		String playlistID = intent.getExtras().getString("playlistID");
-        String songPosition = intent.getExtras().getString("songPosition");
-        
-        setPlaylist(playlistID);
-        setSongIndex(songPosition);
-        setNewSong(currentSongIndex);
-        
-        live2DMgr.danceStart();
+		if (intent.hasExtra("playlistID") && intent.hasExtra("songPosition")) {
+			String playlistID = intent.getExtras().getString("playlistID");
+	        String songPosition = intent.getExtras().getString("songPosition");
+	        
+	        setPlaylist(playlistID);
+	        setSongIndex(songPosition);
+	        setNewSong(currentSongIndex);
+	        
+	        live2DMgr.danceStart();
+		}
 	}
 	
 	public void onBackPressed() {
@@ -150,7 +152,6 @@ public class DanceActivity extends Activity  {
 					textError.setVisibility(TextView.INVISIBLE);
 					live2DMgr.switchInputModel(avatarJSON);
 				} else {
-					Log.d(TAG, "file extention: " + fileExt);
 					textError.setVisibility(TextView.VISIBLE);
 				}
 			}
@@ -161,10 +162,16 @@ public class DanceActivity extends Activity  {
 		
 		if (requestCode == BROWSE_BG_CODE) {
 			if (resultCode == RESULT_OK) {
+				
+				Log.d(TAG, "background url recieved");
+				
 				Uri uri = data.getData();
-				String avatarJSON = uri.getPath();
+				String bgPath= uri.getPath();
+				
+				view.setBackground(bgPath);
 			}
 			if (resultCode == RESULT_CANCELED) {	
+				Log.d(TAG, "background url canceled");
 				textError.setVisibility(TextView.VISIBLE);
 			}
 		}
@@ -349,8 +356,8 @@ public class DanceActivity extends Activity  {
 		String title = i.getTitle();
 		String artist = i.getArtist();
 		
-		Toast.makeText(getApplicationContext(), artist + " - " + title + "\n bpm: " + _bpm, Toast.LENGTH_SHORT).show();
-		live2DMgr.danceSetBPM(_bpm);
+		Toast.makeText(getApplicationContext(), artist + " - " + title, Toast.LENGTH_SHORT).show();
+		live2DMgr.danceSetBPM(currentSongBPM);
 	}
 	
 	class ButtonBGListener implements OnClickListener {
@@ -361,7 +368,7 @@ public class DanceActivity extends Activity  {
 			
 			Intent intent = new Intent();
 			intent.setAction(Intent.ACTION_GET_CONTENT);
-			intent.setDataAndType(path, "application/json");
+			intent.setDataAndType(path, "image/*");
 			startActivityForResult(intent, BROWSE_BG_CODE);
 		}
 	}
