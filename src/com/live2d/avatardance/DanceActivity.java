@@ -50,6 +50,7 @@ public class DanceActivity extends Activity  {
 	private Button buttonLoad;
 	private Button buttonStart;
 	private Button buttonBG;
+	private Button buttonAbout;
 	private ImageButton buttonAvatarBack;
 	private ImageButton buttonAvatarFwd;
 	private TextView textError;
@@ -173,8 +174,6 @@ public class DanceActivity extends Activity  {
 		        setPlaylist(playlistID);
 		        setSongIndex(songPosition);
 		        setNewSong(currentSongIndex);
-		        
-		        
 			}
 			if (resultCode == RESULT_CANCELED) {
 				textError.setText("Error has occurred with song selection.");
@@ -192,6 +191,10 @@ public class DanceActivity extends Activity  {
 		FrameLayout layout=(FrameLayout) findViewById(R.id.live2DLayout);
 		layout.addView(view, 0, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		findViewById(R.id.layout_avatar).bringToFront();
+		
+		buttonAbout = (Button) findViewById(R.id.button_about);
+		ButtonAboutListener buttonAboutListener = new ButtonAboutListener();
+		buttonAbout.setOnClickListener(buttonAboutListener);
 		
 		buttonLoad = (Button) findViewById(R.id.button_load);
 		ButtonLoadListener buttonLoadListener = new ButtonLoadListener();
@@ -359,7 +362,6 @@ public class DanceActivity extends Activity  {
 		int bpm = (int) currentSongBPM;
 		valueBPM.setText(Integer.toString(bpm));
 		
-		
 		live2DMgr.danceSetBPM(currentSongBPM);
 	}
 	
@@ -394,6 +396,16 @@ public class DanceActivity extends Activity  {
 			intent.setAction(Intent.ACTION_GET_CONTENT);
 			intent.setDataAndType(path, "image/*");
 			startActivityForResult(intent, BROWSE_BG_CODE);
+		}
+	}
+	
+	class ButtonAboutListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			Intent i = new Intent(DanceActivity.this, CreditsActivity.class);
+			i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			startActivity(i);
 		}
 	}
 	
@@ -533,21 +545,22 @@ public class DanceActivity extends Activity  {
 
 		@Override
 		public void onClick(View v) {
-			currentSongBPM++;
-			live2DMgr.danceSetBPM(currentSongBPM);
-			int bpm = (int) currentSongBPM;
-			valueBPM.setText(Integer.toString(bpm));
+			if (currentSongBPM < 400) {
+				currentSongBPM++;
+				live2DMgr.danceSetBPM(currentSongBPM);
+				int bpm = (int) currentSongBPM;
+				valueBPM.setText(Integer.toString(bpm));
+			}
 		}
 
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
-			// TODO Auto-generated method stub
-			
-			currentSongBPM++;
-			live2DMgr.danceSetBPM(currentSongBPM);
-			int bpm = (int) currentSongBPM;
-			valueBPM.setText(Integer.toString(bpm));
-			
+			if (currentSongBPM < 400) {
+				currentSongBPM++;
+				live2DMgr.danceSetBPM(currentSongBPM);
+				int bpm = (int) currentSongBPM;
+				valueBPM.setText(Integer.toString(bpm));
+			}
 			return true;
 		}
 	}

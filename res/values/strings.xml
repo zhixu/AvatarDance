@@ -14,6 +14,7 @@
     <string name="button_start">Start</string>
     <string name="string_error">Please use proper file format.</string>
     <string name="button_background">Load BG</string>
+    <string name="button_about">About</string>
     <string name="title_activity_credits">CreditsActivity</string>
     
     <string name="attribution">Application created by Katherine Xu (katherinexu.me) 
