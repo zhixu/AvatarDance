@@ -6,8 +6,6 @@
  */
 package com.live2d.avatardance;
 
-import java.util.ArrayList;
-
 import javax.microedition.khronos.opengles.GL10;
 
 import jp.live2d.Live2D;
@@ -15,9 +13,6 @@ import jp.live2d.framework.L2DViewMatrix;
 import jp.live2d.framework.Live2DFramework;
 import jp.live2d.util.UtSystem;
 import android.app.Activity;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Environment;
 import android.util.Log;
 
 public class LAppLive2DManager
@@ -26,7 +21,6 @@ public class LAppLive2DManager
 	static public final String 	TAG = "Live2DManager";
 
 	private LAppView 				view;		
-	private DanceActivity 			activity;
 
 	private LAppModel model;
 	
@@ -42,8 +36,6 @@ public class LAppLive2DManager
 	{
 		Live2D.init();
 		Live2DFramework.setPlatformManager(new PlatformManager());
-		
-		activity = act;
 		
 		model = new LAppModel();
 		modelPath = LAppDefine.MODEL_WANKO;

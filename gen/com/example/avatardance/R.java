@@ -9,17 +9,51 @@ package com.example.avatardance;
 
 public final class R {
     public static final class attr {
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int cropImageStyle=0x7f010000;
+        /** <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+         */
+        public static final int highlightColor=0x7f010001;
+        /** <p>Must be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>changing</code></td><td>0</td><td></td></tr>
+<tr><td><code>always</code></td><td>1</td><td></td></tr>
+<tr><td><code>never</code></td><td>2</td><td></td></tr>
+</table>
+         */
+        public static final int showHandles=0x7f010003;
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int showThirds=0x7f010002;
     }
     public static final class color {
-        public static final int beige=0x7f060001;
-        public static final int gray=0x7f060003;
+        public static final int beige=0x7f050005;
+        public static final int crop__button_bar=0x7f050000;
+        public static final int crop__button_text=0x7f050001;
+        public static final int crop__selector_focused=0x7f050003;
+        public static final int crop__selector_pressed=0x7f050002;
+        public static final int gray=0x7f050007;
         /** 
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     
          */
-        public static final int green=0x7f060000;
-        public static final int red=0x7f060002;
+        public static final int green=0x7f050004;
+        public static final int red=0x7f050006;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -29,8 +63,9 @@ public final class R {
          would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively).
     
          */
-        public static final int activity_horizontal_margin=0x7f040000;
-        public static final int activity_vertical_margin=0x7f040001;
+        public static final int activity_horizontal_margin=0x7f060001;
+        public static final int activity_vertical_margin=0x7f060002;
+        public static final int crop__bar_height=0x7f060000;
     }
     public static final class drawable {
         public static final int avatar_back=0x7f020000;
@@ -39,48 +74,61 @@ public final class R {
         public static final int button_beige=0x7f020003;
         public static final int button_green=0x7f020004;
         public static final int button_red=0x7f020005;
-        public static final int down=0x7f020006;
-        public static final int forward=0x7f020007;
-        public static final int ic_launcher=0x7f020008;
-        public static final int music_background=0x7f020009;
-        public static final int pause=0x7f02000a;
-        public static final int play=0x7f02000b;
-        public static final int up=0x7f02000c;
+        public static final int crop__divider=0x7f020006;
+        public static final int crop__ic_cancel=0x7f020007;
+        public static final int crop__ic_done=0x7f020008;
+        public static final int crop__selectable_background=0x7f020009;
+        public static final int crop__texture=0x7f02000a;
+        public static final int crop__tile=0x7f02000b;
+        public static final int down=0x7f02000c;
+        public static final int forward=0x7f02000d;
+        public static final int ic_launcher=0x7f02000e;
+        public static final int music_background=0x7f02000f;
+        public static final int pause=0x7f020010;
+        public static final int play=0x7f020011;
+        public static final int up=0x7f020012;
     }
     public static final class id {
-        public static final int action_settings=0x7f090020;
-        public static final int artist=0x7f09001f;
-        public static final int avatar_back=0x7f090008;
-        public static final int avatar_fwd=0x7f09000a;
-        public static final int button_about=0x7f090003;
-        public static final int button_back=0x7f090018;
-        public static final int button_back_home=0x7f09000d;
-        public static final int button_background=0x7f090005;
-        public static final int button_down=0x7f090016;
-        public static final int button_forward=0x7f09001a;
-        public static final int button_load=0x7f090004;
-        public static final int button_menu=0x7f090010;
-        public static final int button_play=0x7f090019;
-        public static final int button_start=0x7f090006;
-        public static final int button_up=0x7f090013;
-        public static final int controls=0x7f090011;
-        public static final int layout_avatar=0x7f090001;
-        public static final int layout_avatar_buttons=0x7f090002;
-        public static final int layout_bpm=0x7f090012;
-        public static final int layout_change_avatar=0x7f090007;
-        public static final int layout_menu=0x7f09000f;
-        public static final int layout_music_controller=0x7f090017;
-        public static final int live2DLayout=0x7f090000;
-        public static final int live2DLayout2=0x7f09000e;
-        public static final int playlist_name=0x7f09001d;
-        public static final int playlist_title=0x7f09001b;
-        public static final int songlist_title=0x7f09001c;
-        public static final int string_BPM=0x7f090014;
-        public static final int textView1=0x7f09000c;
-        public static final int text_error=0x7f09000b;
-        public static final int text_pick_avatar=0x7f090009;
-        public static final int title=0x7f09001e;
-        public static final int value_bpm=0x7f090015;
+        public static final int action_settings=0x7f040027;
+        public static final int always=0x7f040001;
+        public static final int artist=0x7f040026;
+        public static final int avatar_back=0x7f04000b;
+        public static final int avatar_fwd=0x7f04000d;
+        public static final int btn_cancel=0x7f040022;
+        public static final int btn_done=0x7f040023;
+        public static final int button_about=0x7f040006;
+        public static final int button_back=0x7f04001b;
+        public static final int button_back_home=0x7f040010;
+        public static final int button_background=0x7f040008;
+        public static final int button_down=0x7f040019;
+        public static final int button_forward=0x7f04001d;
+        public static final int button_load=0x7f040007;
+        public static final int button_menu=0x7f040013;
+        public static final int button_play=0x7f04001c;
+        public static final int button_start=0x7f040009;
+        public static final int button_up=0x7f040016;
+        public static final int changing=0x7f040000;
+        public static final int controls=0x7f040014;
+        public static final int crop_image=0x7f040021;
+        public static final int done_cancel_bar=0x7f040020;
+        public static final int layout_avatar=0x7f040004;
+        public static final int layout_avatar_buttons=0x7f040005;
+        public static final int layout_bpm=0x7f040015;
+        public static final int layout_change_avatar=0x7f04000a;
+        public static final int layout_menu=0x7f040012;
+        public static final int layout_music_controller=0x7f04001a;
+        public static final int live2DLayout=0x7f040003;
+        public static final int live2DLayout2=0x7f040011;
+        public static final int never=0x7f040002;
+        public static final int playlist_name=0x7f040024;
+        public static final int playlist_title=0x7f04001e;
+        public static final int songlist_title=0x7f04001f;
+        public static final int string_BPM=0x7f040017;
+        public static final int textView1=0x7f04000f;
+        public static final int text_error=0x7f04000e;
+        public static final int text_pick_avatar=0x7f04000c;
+        public static final int title=0x7f040025;
+        public static final int value_bpm=0x7f040018;
     }
     public static final class layout {
         public static final int activity_avatar=0x7f030000;
@@ -88,33 +136,40 @@ public final class R {
         public static final int activity_dance=0x7f030002;
         public static final int activity_playlist=0x7f030003;
         public static final int activity_songlist=0x7f030004;
-        public static final int playlist_row_item=0x7f030005;
-        public static final int songlist_row_item=0x7f030006;
+        public static final int crop__activity_crop=0x7f030005;
+        public static final int crop__layout_done_cancel=0x7f030006;
+        public static final int playlist_row_item=0x7f030007;
+        public static final int songlist_row_item=0x7f030008;
     }
     public static final class menu {
-        public static final int avatar=0x7f080000;
-        public static final int credits=0x7f080001;
-        public static final int dance=0x7f080002;
-        public static final int playlist=0x7f080003;
-        public static final int songlist=0x7f080004;
+        public static final int avatar=0x7f090000;
+        public static final int credits=0x7f090001;
+        public static final int dance=0x7f090002;
+        public static final int playlist=0x7f090003;
+        public static final int songlist=0x7f090004;
     }
     public static final class string {
-        public static final int action_settings=0x7f050002;
-        public static final int app_name=0x7f050000;
-        public static final int attribution=0x7f05000f;
-        public static final int button_about=0x7f05000d;
-        public static final int button_background=0x7f05000c;
-        public static final int button_pick_avatar=0x7f050009;
-        public static final int button_start=0x7f05000a;
-        public static final int hello_world=0x7f050001;
-        public static final int player_settings=0x7f050003;
-        public static final int string_bpm=0x7f050007;
-        public static final int string_error=0x7f05000b;
-        public static final int title_activity_avatar=0x7f050006;
-        public static final int title_activity_credits=0x7f05000e;
-        public static final int title_activity_playlist=0x7f050004;
-        public static final int title_activity_songlist=0x7f050005;
-        public static final int value_bpm=0x7f050008;
+        public static final int action_settings=0x7f070007;
+        public static final int app_name=0x7f070005;
+        public static final int attribution=0x7f070014;
+        public static final int button_about=0x7f070012;
+        public static final int button_background=0x7f070011;
+        public static final int button_pick_avatar=0x7f07000e;
+        public static final int button_start=0x7f07000f;
+        public static final int crop__cancel=0x7f070004;
+        public static final int crop__done=0x7f070003;
+        public static final int crop__pick_error=0x7f070002;
+        public static final int crop__saving=0x7f070000;
+        public static final int crop__wait=0x7f070001;
+        public static final int hello_world=0x7f070006;
+        public static final int player_settings=0x7f070008;
+        public static final int string_bpm=0x7f07000c;
+        public static final int string_error=0x7f070010;
+        public static final int title_activity_avatar=0x7f07000b;
+        public static final int title_activity_credits=0x7f070013;
+        public static final int title_activity_playlist=0x7f070009;
+        public static final int title_activity_songlist=0x7f07000a;
+        public static final int value_bpm=0x7f07000d;
     }
     public static final class style {
         /** 
@@ -134,11 +189,80 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f070000;
+        public static final int AppBaseTheme=0x7f080006;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f070001;
-        public static final int TitleStyle=0x7f070002;
+        public static final int AppTheme=0x7f080007;
+        public static final int Crop=0x7f080000;
+        public static final int Crop_ActionButton=0x7f080002;
+        public static final int Crop_ActionButtonText=0x7f080003;
+        public static final int Crop_ActionButtonText_Cancel=0x7f080005;
+        public static final int Crop_ActionButtonText_Done=0x7f080004;
+        public static final int Crop_DoneCancelBar=0x7f080001;
+        public static final int TitleStyle=0x7f080008;
     }
+    public static final class styleable {
+        /** Attributes that can be used with a CropImageView.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #CropImageView_highlightColor com.example.avatardance:highlightColor}</code></td><td></td></tr>
+           <tr><td><code>{@link #CropImageView_showHandles com.example.avatardance:showHandles}</code></td><td></td></tr>
+           <tr><td><code>{@link #CropImageView_showThirds com.example.avatardance:showThirds}</code></td><td></td></tr>
+           </table>
+           @see #CropImageView_highlightColor
+           @see #CropImageView_showHandles
+           @see #CropImageView_showThirds
+         */
+        public static final int[] CropImageView = {
+            0x7f010001, 0x7f010002, 0x7f010003
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.example.avatardance.R.attr#highlightColor}
+          attribute's value can be found in the {@link #CropImageView} array.
+
+
+          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+          @attr name com.example.avatardance:highlightColor
+        */
+        public static final int CropImageView_highlightColor = 0;
+        /**
+          <p>This symbol is the offset where the {@link com.example.avatardance.R.attr#showHandles}
+          attribute's value can be found in the {@link #CropImageView} array.
+
+
+          <p>Must be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>changing</code></td><td>0</td><td></td></tr>
+<tr><td><code>always</code></td><td>1</td><td></td></tr>
+<tr><td><code>never</code></td><td>2</td><td></td></tr>
+</table>
+          @attr name com.example.avatardance:showHandles
+        */
+        public static final int CropImageView_showHandles = 2;
+        /**
+          <p>This symbol is the offset where the {@link com.example.avatardance.R.attr#showThirds}
+          attribute's value can be found in the {@link #CropImageView} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.example.avatardance:showThirds
+        */
+        public static final int CropImageView_showThirds = 1;
+    };
 }

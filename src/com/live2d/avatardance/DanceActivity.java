@@ -1,5 +1,6 @@
 package com.live2d.avatardance;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -11,6 +12,7 @@ import com.live2d.avatardance.LAppView;
 import jp.live2d.utils.android.FileManager;
 
 import com.example.avatardance.R;
+import com.soundcloud.android.crop.Crop;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -99,15 +101,11 @@ public class DanceActivity extends Activity  {
         a = this;
         
         setupGUIAvatar();
-        
-        //FrameLayout f = (FrameLayout) findViewById(R.id.live2DLayout);
-      	//FileManager.init(this.getApplicationContext(), f.getWidth(), f.getHeight());
+
       	DisplayMetrics metrics = this.getApplicationContext().getResources().getDisplayMetrics();
-      	
       	FileManager.init(this.getApplicationContext(), metrics.widthPixels, metrics.heightPixels);
         
-        //Display display = getWindowManager().getDefaultDisplay();
-        //FileManager.init(this.getApplicationContext(), display.getWidth(), display.getHeight());
+
     }
 	
 	public void onNewIntent(Intent intent) {
@@ -137,6 +135,7 @@ public class DanceActivity extends Activity  {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == BROWSE_FILE_CODE) {
 			if (resultCode == RESULT_OK) {
+				textError.setVisibility(TextView.INVISIBLE);
 				Uri uri = data.getData();
 				String avatarJSON = uri.getPath();
 				
@@ -157,9 +156,10 @@ public class DanceActivity extends Activity  {
 		
 		if (requestCode == BROWSE_BG_CODE) {
 			if (resultCode == RESULT_OK) {
-				
+				textError.setVisibility(TextView.INVISIBLE);
 				Uri uri = data.getData();
-				view.setBackground(uri);
+				Uri output = Uri.fromFile(new File(getCacheDir(), "cropped"));
+				new Crop(uri).output(output).asSquare().start(this);
 			}
 			if (resultCode == RESULT_CANCELED) {	
 				textError.setVisibility(TextView.VISIBLE);
@@ -168,6 +168,7 @@ public class DanceActivity extends Activity  {
 		
 		if (requestCode == BROWSE_SONG_CODE) {
 			if (resultCode == RESULT_OK) {
+				textError.setVisibility(TextView.INVISIBLE);
 				String playlistID = data.getExtras().getString("playlistID");
 		        String songPosition = data.getExtras().getString("songPosition");
 		        
@@ -177,6 +178,16 @@ public class DanceActivity extends Activity  {
 			}
 			if (resultCode == RESULT_CANCELED) {
 				textError.setText("Error has occurred with song selection.");
+				textError.setVisibility(TextView.VISIBLE);
+			}
+		}
+		
+		if (requestCode == Crop.REQUEST_CROP) {
+			if (resultCode == RESULT_OK) {
+				textError.setVisibility(TextView.INVISIBLE);
+				view.setBackground(Uri.fromFile(new File(getCacheDir(), "cropped")));
+			} else {
+				textError.setText("Error has occurred with image selection.");
 				textError.setVisibility(TextView.VISIBLE);
 			}
 		}
