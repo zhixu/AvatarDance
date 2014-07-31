@@ -41,12 +41,6 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 
 	public LAppRenderer( LAppLive2DManager live2DMgr  ){
 		this.delegate = live2DMgr ;
-		/*try {
-			bgPath = FileManager.open_background(LAppDefine.BACK_IMAGE_NAME, isAsset);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 	}
 
 

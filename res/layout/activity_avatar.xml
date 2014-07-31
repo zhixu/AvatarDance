@@ -16,23 +16,7 @@
             android:layout_width="match_parent"
         	android:layout_height="match_parent">
             
-            <ImageButton 
-                android:id="@+id/avatar_fwd"
-                android:layout_width="30dp"
-		        android:layout_height="30dp"
-		        android:layout_marginRight="10dp"
-		        android:layout_alignParentRight="true"
-		        android:layout_centerVertical="true"
-                android:background="@drawable/avatar_fwd"/>
             
-            <ImageButton
-		        android:id="@+id/avatar_back"
-		        android:layout_width="30dp"
-		        android:layout_height="30dp"
-		        android:layout_marginLeft="10dp"
-		        android:layout_alignParentLeft="true"
-		        android:layout_centerVertical="true"
-		        android:background="@drawable/avatar_back" />
         
 	        <LinearLayout
 	            android:id="@+id/layout_avatar_buttons"
@@ -76,20 +60,44 @@
 	            
 	
 		    </LinearLayout>
+		    
+	        <LinearLayout
+	            android:id="@+id/layout_change_avatar"
+	            android:layout_width="match_parent"
+	        	android:layout_height="wrap_content"
+	        	android:orientation="horizontal"
+	        	android:background="@color/beige"
+	        	android:padding="20dp"
+	        	android:gravity="center"
+	        	android:layout_alignParentBottom="true"
+		        android:layout_centerHorizontal="true">
 
-	        <TextView
-	            android:id="@+id/text_pick_avatar"
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content"
-	            android:layout_alignParentBottom="true"
-	            android:layout_centerHorizontal="true"
-				android:gravity="center"
-				android:padding="10dp"
-	            android:textSize="24sp"
-        		android:textStyle="bold"
-	            android:text="Pick Avatar"
-	            android:textColor="@color/green"
-	            android:background="@color/beige" />
+	            <ImageButton
+	                android:id="@+id/avatar_back"
+	                android:layout_width="30dp"
+	                android:layout_height="30dp"
+	                android:layout_marginLeft="10dp"
+	                android:background="@drawable/avatar_back" />
+		        
+		        <TextView
+		            android:id="@+id/text_pick_avatar"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:textSize="24sp"
+	        		android:textStyle="bold"
+	        		android:paddingLeft="40dp"
+	        		android:paddingRight="40dp"
+		            android:text="Pick Avatar"
+		            android:textColor="@color/green" />
+
+		        <ImageButton
+		            android:id="@+id/avatar_fwd"
+		            android:layout_width="30dp"
+		            android:layout_height="30dp"
+		            android:layout_marginRight="10dp"
+		            android:background="@drawable/avatar_fwd" />
+
+		    </LinearLayout>
 
 	    </RelativeLayout>
 	    

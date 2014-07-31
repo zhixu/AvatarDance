@@ -17,12 +17,12 @@
 	        
 	        <ImageButton
 	            android:id="@+id/button_menu"
-	            android:layout_width="30dp"
-	            android:layout_height="30dp"
+	            android:layout_width="50dp"
+	            android:layout_height="50dp"
 	            android:layout_marginRight="14dp"
 	            android:layout_marginTop="14dp"
 	            android:layout_alignParentRight="true"
-	            android:background="@drawable/menu"
+	            android:background="@drawable/down"
 	            android:contentDescription="@string/player_settings" />
 	        
 	        <RelativeLayout
@@ -38,7 +38,9 @@
 		            android:layout_alignParentTop="true"
 		            android:layout_margin="10dp"
 		            android:gravity="center"
-		            android:orientation="vertical" >
+		            android:orientation="vertical"
+		            android:background="@drawable/button_beige"
+		            android:padding="10dp" >
 	
 		            <ImageButton
 		                android:id="@+id/button_up"

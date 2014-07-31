@@ -25,6 +25,8 @@ public class SonglistActivity extends ListActivity {
 	String playlistID;
 	TextView title;
 	
+	ArrayList<SongItem> songData;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,7 +56,7 @@ public class SonglistActivity extends ListActivity {
 		ContentResolver cr = this.getContentResolver();
 		String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
 
-		ArrayList<SongItem> songData = new ArrayList<SongItem>();
+		songData = new ArrayList<SongItem>();
 		
 		//shuffle option
 		songData.add(new SongItem( "Shuffle", "", null));
@@ -119,19 +121,23 @@ public class SonglistActivity extends ListActivity {
 	protected void onListItemClick(ListView listView, View view, int position,
 			long id) {
 		super.onListItemClick(listView, view, position, id);
-
-		Intent i = new Intent(this, DanceActivity.class);
-		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-		Log.d("DANCE ACTIVITY", "adding reorder flag");
-		i.putExtra("playlistID", playlistID);
 		
-		if (position == 0) {
-			i.putExtra("songPosition", "shuffle");
-		} else {
-			i.putExtra("songPosition", Integer.toString(position-1));
+		
+		if (songData.size() > 1) {
+			
+			Intent i = new Intent(this, DanceActivity.class);
+			i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			Log.d("DANCE ACTIVITY", "adding reorder flag");
+			i.putExtra("playlistID", playlistID);
+			
+			if (position == 0) {
+				i.putExtra("songPosition", "shuffle");
+			} else {
+				i.putExtra("songPosition", Integer.toString(position-1));
+			}
+			
+			startActivity(i);
 		}
-		
-		startActivity(i);
 
 		//setResult(RESULT_OK, i);
 		//finish();

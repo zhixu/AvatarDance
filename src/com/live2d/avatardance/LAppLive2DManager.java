@@ -89,10 +89,10 @@ public class LAppLive2DManager
 	public void setDefaultModelPath() {
 		switch (modelNum) {
 		case 0:
-			modelPath = LAppDefine.MODEL_MIKU;
+			modelPath = LAppDefine.MODEL_WANKO;
 			break;
 		case 1:
-			modelPath = LAppDefine.MODEL_WANKO;
+			modelPath = LAppDefine.MODEL_MIKU;
 			break;
 		}
 	}

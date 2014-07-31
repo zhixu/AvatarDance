@@ -184,7 +184,6 @@ public class LAppView extends GLSurfaceView {
 		}
 	}
 
-
 	/*
 	 * Activityã?Œãƒ?ãƒ¼ã‚ºã?•ã‚Œã?Ÿæ™‚ã?®ã‚¤ãƒ™ãƒ³ãƒˆ
 	 */

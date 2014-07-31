@@ -1,8 +1,6 @@
 package com.live2d.avatardance;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
@@ -10,34 +8,22 @@ import java.util.Stack;
 import com.live2d.avatardance.LAppLive2DManager;
 import com.live2d.avatardance.LAppView;
 
-import jp.live2d.motion.Live2DMotion;
 import jp.live2d.utils.android.FileManager;
 
 import com.example.avatardance.R;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.SurfaceTexture;
-import android.hardware.Camera;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -77,12 +63,11 @@ public class DanceActivity extends Activity  {
 	
 	private TextView valueBPM;
 	
-	private String playlistID;
-	
 	ArrayList<SongItem> songData;
 	Stack<Integer> songHistory;
 	
 	private MediaPlayer mp;
+	private MusicOnCompletionListener musicCompletionListener;
 	private Cursor cursor = null;
 	private boolean isPlaying = true;
 	private boolean isShuffle = false;
@@ -113,8 +98,15 @@ public class DanceActivity extends Activity  {
         a = this;
         
         setupGUIAvatar();
+        
+        //FrameLayout f = (FrameLayout) findViewById(R.id.live2DLayout);
+      	//FileManager.init(this.getApplicationContext(), f.getWidth(), f.getHeight());
+      	DisplayMetrics metrics = this.getApplicationContext().getResources().getDisplayMetrics();
       	
-      	FileManager.init(this.getApplicationContext());
+      	FileManager.init(this.getApplicationContext(), metrics.widthPixels, metrics.heightPixels);
+        
+        //Display display = getWindowManager().getDefaultDisplay();
+        //FileManager.init(this.getApplicationContext(), display.getWidth(), display.getHeight());
     }
 	
 	public void onNewIntent(Intent intent) {
@@ -132,6 +124,13 @@ public class DanceActivity extends Activity  {
 	        	live2DMgr.danceStart();
 	        }
 		}
+	}
+	
+	public void onBackPressed() {
+
+		Intent i = new Intent(this, SonglistActivity.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		startActivity(i);
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -175,7 +174,7 @@ public class DanceActivity extends Activity  {
 		        setSongIndex(songPosition);
 		        setNewSong(currentSongIndex);
 		        
-		        live2DMgr.danceStart();
+		        
 			}
 			if (resultCode == RESULT_CANCELED) {
 				textError.setText("Error has occurred with song selection.");
@@ -223,8 +222,10 @@ public class DanceActivity extends Activity  {
 		setContentView(R.layout.activity_dance);
 		
 		mp = new MediaPlayer();
+		musicCompletionListener = new MusicOnCompletionListener();
+		mp.setOnCompletionListener(musicCompletionListener);
         songHistory = new Stack<Integer>();
-		
+        
 		//setting up camera
 		//initializeCamera();
 
@@ -293,15 +294,23 @@ public class DanceActivity extends Activity  {
 			cursor.moveToNext();
 		}
 		cursor.close();
+		
+		if (songData.size() <= 0) {
+			isPlaying = false;
+		} else {
+			live2DMgr.danceStart();
+		}
 	}
 	
 	private void setSongIndex(String songPosition) {
-		if (songPosition == null || songPosition.equals("shuffle")) {
-			isShuffle = true;
-			currentSongIndex = pickRandomSong();
-		} else {
-			isShuffle = false;
-			currentSongIndex = Integer.parseInt(songPosition);
+		if (songData.size() > 0) {
+			if (songPosition == null || songPosition.equals("shuffle")) {
+				isShuffle = true;
+				currentSongIndex = pickRandomSong();
+			} else {
+				isShuffle = false;
+				currentSongIndex = Integer.parseInt(songPosition);
+			}
 		}
 	}
 	
@@ -329,11 +338,15 @@ public class DanceActivity extends Activity  {
 	}
 	
 	private void getBPM() {
-		SongItem i = songData.get(currentSongIndex);
-		String title = i.getTitle();
-		String artist = i.getArtist();
-		
-		new SongBPMRetriever().getBPM(title, artist, this);
+		if (songData.size() > 0) {
+			SongItem i = songData.get(currentSongIndex);
+			String title = i.getTitle();
+			String artist = i.getArtist();
+			
+			Toast.makeText(getApplicationContext(), artist + " - " + title, Toast.LENGTH_SHORT).show();
+			
+			new SongBPMRetriever().getBPM(title, artist, this);
+		}
 	}
 	
 	public void setBPM (float _bpm) {
@@ -346,12 +359,29 @@ public class DanceActivity extends Activity  {
 		int bpm = (int) currentSongBPM;
 		valueBPM.setText(Integer.toString(bpm));
 		
-		SongItem i = songData.get(currentSongIndex);
-		String title = i.getTitle();
-		String artist = i.getArtist();
 		
-		Toast.makeText(getApplicationContext(), artist + " - " + title, Toast.LENGTH_SHORT).show();
 		live2DMgr.danceSetBPM(currentSongBPM);
+	}
+	
+	class MusicOnCompletionListener implements MediaPlayer.OnCompletionListener {
+
+		@Override
+		public void onCompletion(MediaPlayer mp) {
+			if (isShuffle) {
+				int i = pickRandomSong();
+				songHistory.push(i);
+				setNewSong(i);
+			} else {
+				if (currentSongIndex < songData.size() - 1) {
+					currentSongIndex++;
+				} else {
+					currentSongIndex = 0;
+				}
+				setNewSong(currentSongIndex);	
+			}
+			
+		}
+		
 	}
 	
 	class ButtonBGListener implements OnClickListener {
@@ -408,6 +438,7 @@ public class DanceActivity extends Activity  {
 		public void onClick(View v) {
 			Intent i = new Intent(DanceActivity.this, PlaylistActivity.class);
 			ViewGroup parent = (ViewGroup) view.getParent();
+			live2DMgr.danceSetBPM(-1);
 			startActivityForResult(i,BROWSE_SONG_CODE);
 			parent.removeView(view);
 			setupGUIDance();
@@ -419,19 +450,22 @@ public class DanceActivity extends Activity  {
 
 		@Override
 		public void onClick(View v) {
-			if (mp != null) {
-				if (isPlaying) {
-					buttonPlay.setBackground(getResources().getDrawable(R.drawable.play));
-					live2DMgr.danceStop();
-					live2DMgr.danceResetBPM(currentSongBPM);
-					mp.pause();
-				} else {
-					buttonPlay.setBackground(getResources().getDrawable(R.drawable.pause));
-					live2DMgr.danceStart();
-					live2DMgr.danceSetBPM(currentSongBPM);
-					mp.start();
+			
+			if (songData.size() > 0) {
+				if (mp != null) {
+					if (isPlaying) {
+						buttonPlay.setBackground(getResources().getDrawable(R.drawable.play));
+						live2DMgr.danceStop();
+						live2DMgr.danceResetBPM(currentSongBPM);
+						mp.pause();
+					} else {
+						buttonPlay.setBackground(getResources().getDrawable(R.drawable.pause));
+						live2DMgr.danceStart();
+						live2DMgr.danceSetBPM(currentSongBPM);
+						mp.start();
+					}
+					isPlaying = !isPlaying;
 				}
-				isPlaying = !isPlaying;
 			}
 		}
 	}
@@ -486,8 +520,10 @@ public class DanceActivity extends Activity  {
 			RelativeLayout view = (RelativeLayout) findViewById(R.id.controls);
 			
 			if (view.getVisibility() == View.VISIBLE){
+				buttonMenu.setBackgroundResource(R.drawable.up);
 				view.setVisibility(View.INVISIBLE);
 			} else if (view.getVisibility() == View.INVISIBLE){
+				buttonMenu.setBackgroundResource(R.drawable.down);
 				view.setVisibility(View.VISIBLE);
 			}
 		}

@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">AvatarDance</string>
+    <string name="app_name">Avatar Dance</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="player_settings">Player settings</string>
     <string name="title_activity_playlist">Playlists</string>
     <string name="title_activity_songlist">SonglistActivity</string>
     <string name="title_activity_avatar">AvatarActivity</string>
-    
     <string name="string_bpm">BPM</string>
     <string name="value_bpm">000</string>
-    
     <string name="button_pick_avatar">Load Avatar</string>
     <string name="button_start">Start</string>
     <string name="string_error">Please use proper file format.</string>
     <string name="button_background">Load BG</string>
+    <string name="title_activity_credits">CreditsActivity</string>
+    
+    <string name="attribution">Application created by Katherine Xu (katherinexu.me) 
+        \n
+        \nHatsune Miku created by Crypton Future Media, INC., modeling by Miyuki Kunisada (Live2D Inc.) 
+        \nWankoromochi illustrated and modeled by Miyuki Kunisada (Live2D Inc.)
+        \n
+        \n"Arrow", "Arrow" by Luke Macauley
+        \n"Music" by Mani Amini 
+        \n"Arrow", "Arrow", "Play" by Tom Walsh
+		\n"Pause" by Alex Fuller
+		\n"Step Forward", "Step Backward" by useiconic.com
+		\nAll icons are from thenounproject.com collection.</string>
 
 </resources>

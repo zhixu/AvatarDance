@@ -6,6 +6,8 @@
  */
 package jp.live2d.utils.android;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,16 +17,22 @@ import java.io.InputStream;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.TextView;
 
 public class FileManager {
 	static Context context ;
-	
+	static int width, height;
 	private static boolean isAssets;
 
-	public static void init( Context c ){
+	public static void init( Context c, int _width, int _height ){
 		context = c ;
+		width = _width;
+		height = _height;
 	}
 
 	public static void setAsset(boolean a) {
@@ -52,9 +60,48 @@ public class FileManager {
 	
 	public static InputStream open_background(Uri uri) {
 		try {
-			ContentResolver cr = context.getContentResolver();
-			InputStream in = cr.openInputStream(uri);
-			return in;
+			Log.d("DANCE ACTIVITY", "opening background");
+			BitmapFactory.Options o = new BitmapFactory.Options();
+			
+			o.inJustDecodeBounds = true;
+	        BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, o);
+	        Log.d("DANCE ACTIVITY", "stream decoded");
+	        int width_tmp = o.outWidth
+	                , height_tmp = o.outHeight;
+	        int scale = 1;
+	        
+	        Log.d("DANCE ACTIVITY", "ratio width: " + width_tmp + " ratio height: " + height_tmp
+	        		+ "\n width: " + width + " height: " + height);
+
+	        if (width_tmp > width && height_tmp > height) {
+		        while(true) {
+		            if((width_tmp / 2 < height) && (height_tmp / 2 < height))
+		                break;
+		            width_tmp /= 2;
+		            height_tmp /= 2;
+		            scale *= 2;
+		        }
+		        Log.d("DANCE ACTIVITY", "ratio width: " + width_tmp + " ratio height: " + height_tmp);
+		        BitmapFactory.Options o2 = new BitmapFactory.Options();
+		        o2.inSampleSize = scale;
+		        Bitmap tempBitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, o2);
+		        
+		        ByteArrayOutputStream bos = new ByteArrayOutputStream(); 
+		        tempBitmap.compress(CompressFormat.PNG, 0, bos); 
+		        byte[] bitmapdata = bos.toByteArray();
+		        ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
+				
+		        return bs;
+	        } else {
+	        	ContentResolver cr = context.getContentResolver();
+				InputStream in = cr.openInputStream(uri);
+				return in;
+	        }
+	        
+	        //ContentResolver cr = context.getContentResolver();
+			//InputStream in = cr.openInputStream(uri);
+			//return in;
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

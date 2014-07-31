@@ -126,8 +126,6 @@ public class LAppModel extends L2DBaseModel
 		} else {
 			danceNumber = 0;
 		}
-		
-		Log.d(TAG, "dance max: " + max + " dance number: " + danceNumber);
 	}
 
 	public void danceStop() {
