@@ -14,6 +14,8 @@ import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.graphics.Bitmap;
+
 
 /*
  * èƒŒæ™¯ã�ªã�©ã�®ç”»åƒ�ã‚’è¡¨ç¤ºã�™ã‚‹ã€‚
@@ -57,7 +59,26 @@ public class SimpleImage {
 		this.imageTop=1;
 	}
 	
-	public void setTexture(GL10 gl, InputStream in) {
+	public SimpleImage(GL10 gl, Bitmap in) {
+		try {
+			texture=LoadUtil.loadTexture(gl, in, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// åˆ�æœŸè¨­å®š
+		this.uvLeft=0;
+		this.uvRight=1;
+		this.uvBottom=0;
+		this.uvTop=1;
+
+		this.imageLeft=-1;
+		this.imageRight=1;
+		this.imageBottom=-1;
+		this.imageTop=1;
+	}
+	
+	public void setTexture(GL10 gl, Bitmap in) {
 		try {
 			texture=LoadUtil.loadTexture(gl, in, true);
 		} catch (IOException e) {

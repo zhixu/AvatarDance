@@ -58,55 +58,39 @@ public class FileManager {
 		}
 	}
 	
-	public static InputStream open_background(Uri uri) {
-		try {
-			Log.d("DANCE ACTIVITY", "opening background");
-			BitmapFactory.Options o = new BitmapFactory.Options();
-			
-			o.inJustDecodeBounds = true;
-	        BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, o);
-	        Log.d("DANCE ACTIVITY", "stream decoded");
-	        int width_tmp = o.outWidth
-	                , height_tmp = o.outHeight;
-	        int scale = 1;
-	        
-	        Log.d("DANCE ACTIVITY", "ratio width: " + width_tmp + " ratio height: " + height_tmp
-	        		+ "\n width: " + width + " height: " + height);
+	public static Bitmap open_background(Uri uri) throws IOException{
 
-	        if (width_tmp > width && height_tmp > height) {
-		        while(true) {
-		            if((width_tmp / 2 < height) && (height_tmp / 2 < height))
-		                break;
-		            width_tmp /= 2;
-		            height_tmp /= 2;
-		            scale *= 2;
-		        }
-		        Log.d("DANCE ACTIVITY", "ratio width: " + width_tmp + " ratio height: " + height_tmp);
-		        BitmapFactory.Options o2 = new BitmapFactory.Options();
-		        o2.inSampleSize = scale;
-		        Bitmap tempBitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, o2);
-		        
-		        ByteArrayOutputStream bos = new ByteArrayOutputStream(); 
-		        tempBitmap.compress(CompressFormat.PNG, 0, bos); 
-		        byte[] bitmapdata = bos.toByteArray();
-		        ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
-				
-		        return bs;
-	        } else {
-	        	ContentResolver cr = context.getContentResolver();
-				InputStream in = cr.openInputStream(uri);
-				return in;
-	        }
-	        
-	        //ContentResolver cr = context.getContentResolver();
-			//InputStream in = cr.openInputStream(uri);
-			//return in;
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		BitmapFactory.Options o = new BitmapFactory.Options();
 		
-		return null;
+		o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, o);
+
+        int width_tmp = o.outWidth
+                , height_tmp = o.outHeight;
+        int scale = 1;
+        
+        while(true) {
+            if((width_tmp / 2 < height) && (height_tmp / 2 < height))
+                break;
+            width_tmp /= 2;
+            height_tmp /= 2;
+            scale *= 2;
+        }
+
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        Bitmap bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, o2);
+		
+        return bitmap;
+	}
+	
+	public static Bitmap open_background(String path) throws IOException {
+
+		BitmapFactory.Options o = new BitmapFactory.Options();
+		o.inJustDecodeBounds = true;
+        Bitmap bitmap = BitmapFactory.decodeStream(context.getAssets().open(path), null, o);
+		
+		return bitmap;
 	}
 	
 	public static InputStream open_background (String path, boolean isAsset) throws IOException {

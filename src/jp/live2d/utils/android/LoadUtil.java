@@ -55,6 +55,32 @@ public class LoadUtil {
 
 		return texture;
 	}
+	
+	public static int loadTexture(GL10 gl, Bitmap bitmap , boolean mipmap ) throws IOException
+	{
+		int texture ;
+
+		if( mipmap )
+		{
+			texture = buildMipmap(gl, bitmap) ;
+		}
+		else
+		{
+			texture = genTexture(gl) ;
+	        gl.glBindTexture(GL10.GL_TEXTURE_2D, texture) ;
+
+	        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,GL10.GL_LINEAR);
+	        gl.glTexParameterf(GL10.GL_TEXTURE_2D,GL10.GL_TEXTURE_MAG_FILTER,GL10.GL_LINEAR);
+	        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,GL10.GL_CLAMP_TO_EDGE);
+	        gl.glTexParameterf(GL10.GL_TEXTURE_2D,GL10.GL_TEXTURE_WRAP_T,GL10.GL_CLAMP_TO_EDGE);
+	        gl.glTexEnvf(GL10.GL_TEXTURE_ENV,GL10.GL_TEXTURE_ENV_MODE,GL10.GL_MODULATE);
+
+			GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0) ;
+			bitmap.recycle();
+		}
+
+		return texture;
+	}
 
 
 	/*

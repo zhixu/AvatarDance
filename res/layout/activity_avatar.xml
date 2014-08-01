@@ -10,13 +10,13 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true" >
+        
+
 
         <RelativeLayout
             android:id="@+id/layout_avatar"
             android:layout_width="match_parent"
         	android:layout_height="match_parent">
-            
-            
         
 	        <LinearLayout
 	            android:id="@+id/layout_avatar_buttons"
@@ -68,8 +68,6 @@
 			        android:padding="5dp"
 			        android:text="@string/button_start"
 			        android:textColor="@color/beige" />
-	            
-	
 		    </LinearLayout>
 		    
 	        <LinearLayout

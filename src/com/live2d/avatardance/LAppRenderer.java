@@ -16,6 +16,7 @@ import jp.live2d.framework.L2DViewMatrix;
 import jp.live2d.utils.android.FileManager;
 import jp.live2d.utils.android.OffscreenImage;
 import jp.live2d.utils.android.SimpleImage;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
@@ -110,11 +111,13 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 		if (isUpdateBG) {
 			isUpdateBG = false;
 
-				//FileManager.setAsset(false);
-				//InputStream in = FileManager.open_background(bgPath, isAsset);
-			InputStream in = FileManager.open_background(bgPath);
-			bg.setTexture(gl, in);
-
+			Bitmap in;
+			try {
+				in = FileManager.open_background(bgPath);
+				bg.setTexture(gl, in);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		// OpenGL 設定
@@ -200,7 +203,7 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 				// 描画範囲。画面の最大表示範囲に合わせる
 				
 			} else {
-				InputStream in = FileManager.open_background(bgPath);
+				Bitmap in = FileManager.open_background(bgPath);
 				bg=new SimpleImage(context, in);
 			}
 			

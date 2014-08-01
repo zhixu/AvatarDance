@@ -18,6 +18,8 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.PixelFormat;
+import android.hardware.Camera;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -77,6 +79,8 @@ public class DanceActivity extends Activity  {
 	private int currentSongIndex;
 	private float currentSongBPM = -1;
 	
+	private Camera camera;
+	
 	private LAppLive2DManager live2DMgr ;
 	private LAppView view;
 	static private Activity instance;
@@ -104,7 +108,8 @@ public class DanceActivity extends Activity  {
 
       	DisplayMetrics metrics = this.getApplicationContext().getResources().getDisplayMetrics();
       	FileManager.init(this.getApplicationContext(), metrics.widthPixels, metrics.heightPixels);
-        
+      	
+      	view.getHolder().setFormat( PixelFormat.TRANSLUCENT );
 
     }
 	
