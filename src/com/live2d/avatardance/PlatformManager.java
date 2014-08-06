@@ -63,10 +63,9 @@ public class PlatformManager implements IPlatformManager {
 			InputStream in = FileManager.open(path) ;
 
 			boolean mipmap = true;
-			// OpenGLã?®å¯¾å¿œã?™ã‚‹ãƒ†ã‚¯ã‚¹ãƒ?ãƒ£ã‚’ä½œæˆ?ã€‚
-			// ãƒ†ã‚¯ã‚¹ãƒ?ãƒ£ã‚’è‡ªåˆ†ã?§è¨­å®šã?™ã‚‹å ´å?ˆã?¯ã€?glGenTexturesã?§ä½œæˆ?ã?—ã?Ÿç•ªå?·ã?«èª­ã?¿è¾¼ã‚“ã? ç”»åƒ?ãƒ‡ãƒ¼ã‚¿ã‚’è¨­å®šã?—ã?¦ã€?Live2Dã?«ãƒ†ã‚¯ã‚¹ãƒ?ãƒ£ç•ªå?·ã‚’æ¸¡ã?™ã€‚
+			
 			int glTexNo = LoadUtil.loadTexture(gl, in, mipmap);
-			((Live2DModelAndroid) model).setTexture(no, glTexNo);// å¯¾å¿œä»˜ã?‘
+			((Live2DModelAndroid) model).setTexture(no, glTexNo);
 
 			in.close();
 		}

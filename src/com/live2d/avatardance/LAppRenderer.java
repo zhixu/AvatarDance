@@ -11,15 +11,21 @@ import java.io.InputStream;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.opengles.GL11;
 
 import jp.live2d.framework.L2DViewMatrix;
 import jp.live2d.utils.android.FileManager;
+import jp.live2d.utils.android.LoadUtil;
 import jp.live2d.utils.android.OffscreenImage;
 import jp.live2d.utils.android.SimpleImage;
 import android.graphics.Bitmap;
+import android.graphics.SurfaceTexture;
 import android.net.Uri;
+import android.opengl.GLES11Ext;
+import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
+import android.view.SurfaceView;
 
 
 /*
@@ -36,6 +42,7 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 	private boolean isAsset = true;
 	private Uri bgPath = null;
 	//private InputStream bgPath = null;
+	private SurfaceTexture surface;
 
 	private float accelX=0;
 	private float accelY=0;
@@ -43,6 +50,8 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 	public LAppRenderer( LAppLive2DManager live2DMgr  ){
 		this.delegate = live2DMgr ;
 	}
+	
+	private CameraVideo cv;
 
 
 	/*
@@ -152,11 +161,14 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 			if(bg!=null){
 				gl.glPushMatrix() ;
 				{
-					float SCALE_X = 0.25f ;// デバイスの回転による揺れ幅
-					float SCALE_Y = 0.1f ;
-					gl.glTranslatef( -SCALE_X  * accelX , SCALE_Y * accelY , 0 ) ;// 揺れ
-
-					bg.draw(gl);
+					//float SCALE_X = 0.25f ;// デバイスの回転による揺れ幅
+					//float SCALE_Y = 0.1f ;
+					//gl.glTranslatef( -SCALE_X  * accelX , SCALE_Y * accelY , 0 ) ;// 揺れ
+					float[] mtx = new float[16];
+					surface.updateTexImage();
+					surface.getTransformMatrix(mtx);
+					cv.draw();
+					//bg.draw(gl);
 				}
 				gl.glPopMatrix() ;
 			}
@@ -187,7 +199,10 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 		accelX=x;
 		accelY=y;
 	}
-
+	
+	public void setSurface(SurfaceTexture _surface) {
+		surface = _surface;
+	}
 
 	/*
 	 * 背景の設定
@@ -196,7 +211,8 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 	private void setupBackground(GL10 context) {
 
 		//InputStream in = FileManager.open_background(bgPath, isAsset);
-		try {
+		//try {
+			/*
 			if (bgPath == null) {
 				InputStream in = FileManager.open_background(LAppDefine.BACK_IMAGE_NAME, isAsset);
 				bg=new SimpleImage(context, in);
@@ -205,19 +221,52 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 			} else {
 				Bitmap in = FileManager.open_background(bgPath);
 				bg=new SimpleImage(context, in);
-			}
+			}*/
 			
-			bg.setDrawRect(
+			createAndBindCamera(context);
+			
+			/*bg.setDrawRect(
 					LAppDefine.VIEW_LOGICAL_MAX_LEFT,
 					LAppDefine.VIEW_LOGICAL_MAX_RIGHT,
 					LAppDefine.VIEW_LOGICAL_MAX_BOTTOM,
 					LAppDefine.VIEW_LOGICAL_MAX_TOP);
 
 			// 画像を使用する範囲(uv)
-			bg.setUVRect(0.0f,1.0f,0.0f,1.0f);
+			bg.setUVRect(0.0f,1.0f,0.0f,1.0f);*/
 			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		//} catch (IOException e) {
+		//	e.printStackTrace();
+		//}
 	}
+	
+	public void createAndBindCamera(GL10 gl) {
+		int texture = LoadUtil.genTexture(gl);
+		
+		Log.d("TAG", "bg texture number: " + texture);
+
+		// no mip-mapping: http://stackoverflow.com/questions/8875268/is-there-a-better-way-to-get-the-camera-pixels-than-onpreviewframe-on-android
+		gl.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture);
+		
+		// No mip-mapping with camera source.
+	    gl.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+	            GL10.GL_TEXTURE_MIN_FILTER,
+	                            GL10.GL_LINEAR);        
+	    gl.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+	            GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+	    // Clamp to edge is only option.
+	    GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+	            GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
+	    GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+	            GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
+	    
+	    delegate.startCamera(texture);
+		//bg = new SimpleImage(texture);
+	    
+	    new CameraVideo(texture);
+		
+	}
+	
+	
+	
+	
 }

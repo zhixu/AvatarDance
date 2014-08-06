@@ -17,12 +17,14 @@ import android.util.Log;
 
 public class LAppLive2DManager
 {
-
+	
 	static public final String 	TAG = "Live2DManager";
 
 	private LAppView 				view;		
 
 	private LAppModel model;
+
+	private DanceActivity activity;
 	
 	private int modelNum;
 	private String modelPath;
@@ -40,6 +42,8 @@ public class LAppLive2DManager
 		model = new LAppModel();
 		modelPath = LAppDefine.MODEL_WANKO;
 		
+		activity = act;
+		
 		time = 0;
 		prevTime = 0;
 	}
@@ -54,6 +58,10 @@ public class LAppLive2DManager
 				Log.e(TAG,"Failed to load.");
 				//DanceActivity.exit();
 		}
+	}
+	
+	public void startCamera(int texture) {
+		activity.startCamera(texture);
 	}
 	
 	public void switchDefaultModel(boolean isFwd) {

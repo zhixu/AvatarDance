@@ -22,6 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.opengl.GLES11Ext;
 import android.opengl.GLUtils;
 import android.util.Log;
 
@@ -134,11 +135,16 @@ public class LoadUtil {
 	 */
 	public static int buildMipmap(GL10 gl, Bitmap srcBitmap , boolean recycle )
 	{
+		
+		Log.d("LOADUTIL", "buildMipmap called");
+		
 		Bitmap bitmap = srcBitmap ;
 		int level = 0;
 		int height = bitmap.getHeight();
 		int width = bitmap.getWidth();
 		int textureID = genTexture(gl);
+		
+		Log.d("RENDERER", "texture number of etexture: " + textureID);
 
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, textureID);
 

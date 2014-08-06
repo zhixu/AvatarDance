@@ -15,6 +15,8 @@ import java.nio.ShortBuffer;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
+import android.opengl.GLES11Ext;
+import android.util.Log;
 
 
 /*
@@ -38,9 +40,23 @@ public class SimpleImage {
 	private float uvBottom;
 
 	private int texture;
+	
+	public SimpleImage(int tex) {
+		texture = tex;
+		
+		this.uvLeft=0;
+		this.uvRight=1;
+		this.uvBottom=0;
+		this.uvTop=1;
 
+		this.imageLeft=-1;
+		this.imageRight=1;
+		this.imageBottom=-1;
+		this.imageTop=1;
+	}
 
 	public SimpleImage(GL10 gl,InputStream in) {
+		Log.d("SIMPLEIMAGE", "wrong constructor called");
 		try {
 			texture=LoadUtil.loadTexture(gl, in, true);
 		} catch (IOException e) {
@@ -60,6 +76,8 @@ public class SimpleImage {
 	}
 	
 	public SimpleImage(GL10 gl, Bitmap in) {
+		Log.d("SIMPLEIMAGE", "wrong constructor called");
+		
 		try {
 			texture=LoadUtil.loadTexture(gl, in, true);
 		} catch (IOException e) {
@@ -79,6 +97,8 @@ public class SimpleImage {
 	}
 	
 	public void setTexture(GL10 gl, Bitmap in) {
+		Log.d("SIMPLEIMAGE", "wrong constructor called");
+		
 		try {
 			texture=LoadUtil.loadTexture(gl, in, true);
 		} catch (IOException e) {
@@ -98,8 +118,8 @@ public class SimpleImage {
 
 		gl.glTexCoordPointer( 2, GL10.GL_FLOAT , 0 , drawImageBufferUv ) ;
 		gl.glVertexPointer( 2 , GL10.GL_FLOAT , 0 , drawImageBufferVer ) ;
-		gl.glBindTexture(GL10.GL_TEXTURE_2D , texture ) ;
-
+		gl.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES , texture ) ;
+		
 		gl.glDrawElements( GL10.GL_TRIANGLES, 6 , GL10.GL_UNSIGNED_SHORT , drawImageBufferIndex ) ;
 	}
 

@@ -19,6 +19,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.PixelFormat;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -26,6 +27,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -80,6 +82,7 @@ public class DanceActivity extends Activity  {
 	private float currentSongBPM = -1;
 	
 	private Camera camera;
+	private SurfaceTexture surface;
 	
 	private LAppLive2DManager live2DMgr ;
 	private LAppView view;
@@ -101,7 +104,7 @@ public class DanceActivity extends Activity  {
 	{
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-     
+        
         a = this;
         
         setupGUIAvatar();
@@ -112,6 +115,31 @@ public class DanceActivity extends Activity  {
       	view.getHolder().setFormat( PixelFormat.TRANSLUCENT );
 
     }
+	
+	public void startCamera (int texture) {
+		surface = new SurfaceTexture(texture);
+		surface.setOnFrameAvailableListener(new CameraFrameAvailableListener());
+		
+		view.setSurface(surface);
+		
+		camera = Camera.open();
+		try {
+			camera.setPreviewTexture(surface);
+			camera.startPreview();
+			Log.d(TAG, "CAMERA IS ON");
+		} catch (IOException e) {
+			Log.e(TAG, "CAMERA LAUNCH FAILED");
+			e.printStackTrace();
+		}
+	}
+	
+	class CameraFrameAvailableListener implements SurfaceTexture.OnFrameAvailableListener {
+
+		@Override
+		public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+			view.requestRender();
+		}
+	}
 	
 	public void onNewIntent(Intent intent) {
 		
@@ -379,6 +407,7 @@ public class DanceActivity extends Activity  {
 		valueBPM.setText(Integer.toString(bpm));
 		
 		live2DMgr.danceSetBPM(currentSongBPM);
+		Toast.makeText(getApplicationContext(), "bpm: " + bpm, Toast.LENGTH_SHORT).show();
 	}
 	
 	class MusicOnCompletionListener implements MediaPlayer.OnCompletionListener {
@@ -510,7 +539,6 @@ public class DanceActivity extends Activity  {
 				}
 				
 			} else {
-				
 				if (currentSongIndex > 0) {
 					currentSongIndex--;
 				} else {
@@ -643,6 +671,12 @@ public class DanceActivity extends Activity  {
 		super.onDestroy();
 		if (mp != null) {
 			mp.release();
+		}
+		
+		if (camera != null) {
+			camera.stopPreview();
+			camera.release();
+			camera = null;
 		}
 	}
 }

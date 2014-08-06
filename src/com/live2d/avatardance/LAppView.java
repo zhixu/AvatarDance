@@ -7,7 +7,6 @@
  */
 package com.live2d.avatardance;
 
-import java.io.InputStream;
 
 import jp.live2d.framework.L2DMatrix44;
 import jp.live2d.framework.L2DTargetPoint;
@@ -16,15 +15,14 @@ import jp.live2d.utils.android.AccelHelper;
 import jp.live2d.utils.android.TouchManager;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
-import android.os.Environment;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
 
 /*
  * LAppViewã?¯ã€?GLSurfaceViewã‚’ç¶™æ‰¿ã?™ã‚‹OpenGLã?®Viewã?®ã‚µãƒ³ãƒ—ãƒ«
@@ -47,17 +45,18 @@ public class LAppView extends GLSurfaceView {
 	private AccelHelper 				accelHelper;// åŠ é€Ÿåº¦ã‚»ãƒ³ã‚µã?®åˆ¶å¾¡
 	private TouchManager 				touchMgr;// ãƒ”ãƒ³ãƒ?ã?ªã?©
 	private L2DTargetPoint 				dragMgr;// ãƒ‰ãƒ©ãƒƒã‚°ã?«ã‚ˆã‚‹ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã?®ç®¡ç?†
-
-	private DanceActivity activity;
 	
 	GestureDetector 					gestureDetector;
 
 	public LAppView(  Context context )
 	{
 		super( context ) ;
-		activity = (DanceActivity) context;
-		
+		setEGLContextClientVersion(2);
 		setFocusable(true);
+	}
+	
+	public void setSurface(SurfaceTexture tex) {
+		renderer.setSurface(tex);
 	}
 
 
@@ -66,11 +65,9 @@ public class LAppView extends GLSurfaceView {
 		this.delegate = live2DMgr ;
 		this.renderer = new LAppRenderer( live2DMgr ) ;
 
-		
 		setEGLConfigChooser(false);
-		//getHolder().setFormat(PixelFormat.TRANSLUCENT);
 		setRenderer(renderer);
-		//setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+		setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
 		gestureDetector = new GestureDetector(this.getContext()  , simpleOnGestureListener ) ;
 

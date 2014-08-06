@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SonglistActivity extends ListActivity {
 	
@@ -127,7 +128,6 @@ public class SonglistActivity extends ListActivity {
 			
 			Intent i = new Intent(this, DanceActivity.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-			Log.d("DANCE ACTIVITY", "adding reorder flag");
 			i.putExtra("playlistID", playlistID);
 			
 			if (position == 0) {
@@ -137,10 +137,9 @@ public class SonglistActivity extends ListActivity {
 			}
 			
 			startActivity(i);
+		} else {
+			Toast.makeText(this.getApplicationContext(), "No songs in this playlist", Toast.LENGTH_LONG).show();
 		}
-
-		//setResult(RESULT_OK, i);
-		//finish();
 	}
 	
 	
