@@ -17,7 +17,7 @@ import android.graphics.Bitmap;
 import android.opengl.GLUtils;
 
 /*
- * オフスクリーンのバッファに描画する。
+ * ã‚ªãƒ•ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã�®ãƒ�ãƒƒãƒ•ã‚¡ã�«æ��ç”»ã�™ã‚‹ã€‚
  *
  *
  */
@@ -33,40 +33,40 @@ public class OffscreenImage {
 	private static FloatBuffer vertexBuffer ;
 	private static ShortBuffer indexBuffer ;
 
-	public static final int OFFSCREEN_SIZE = 512;// オフスクリーンに描画したときの解像度。縦横同じ。
+	public static final int OFFSCREEN_SIZE = 512;// ã‚ªãƒ•ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã�«æ��ç”»ã�—ã�Ÿã�¨ã��ã�®è§£åƒ�åº¦ã€‚ç¸¦æ¨ªå�Œã�˜ã€‚
 
 	/*
-	 * オフスクリーンを解除する。
+	 * ã‚ªãƒ•ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚’è§£é™¤ã�™ã‚‹ã€‚
 	 * @param gl
 	 */
 	public static void setOnscreen(  GL10 gl ){
 		 GL11ExtensionPack gl11ep = (GL11ExtensionPack) gl;
 
-	    //  オンスクリーン
+	    //  ã‚ªãƒ³ã‚¹ã‚¯ãƒªãƒ¼ãƒ³
 	    gl11ep.glBindFramebufferOES( GL11ExtensionPack.GL_FRAMEBUFFER_OES, 	defaultFrameBuffer );
 	    gl.glViewport(0, 0, viewportWidth, viewportHeight);
 	}
 
 
 	/*
-	 * オフスクリーンにする。
+	 * ã‚ªãƒ•ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã�«ã�™ã‚‹ã€‚
 	 * @param gl
 	 */
 	public static void setOffscreen(  GL10 gl ){
 		 GL11ExtensionPack gl11ep = (GL11ExtensionPack) gl;
 
-	    //  オフスクリーン
+	    //  ã‚ªãƒ•ã‚¹ã‚¯ãƒªãƒ¼ãƒ³
 	    gl11ep.glBindFramebufferOES( GL11ExtensionPack.GL_FRAMEBUFFER_OES, 	offscreenFrameBuffer );
 	    gl.glViewport(0, 0, OFFSCREEN_SIZE, OFFSCREEN_SIZE);
 	}
 
 
 	/*
-	 * オフスクリーンのバッファを作成する。
+	 * ã‚ªãƒ•ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã�®ãƒ�ãƒƒãƒ•ã‚¡ã‚’ä½œæˆ�ã�™ã‚‹ã€‚
 	 * @param gl
 	 * @param width
 	 * @param height
-	 * @param fbo デフォルトのフレームバッファ
+	 * @param fbo ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã�®ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ�ãƒƒãƒ•ã‚¡
 	 */
 	public static void createFrameBuffer( GL10 gl, int width, int height ,int fbo)
 	{
@@ -74,15 +74,15 @@ public class OffscreenImage {
 		viewportHeight=height;
 		defaultFrameBuffer=fbo;
 
-		 //  テクスチャ用メモリの確保
+		 //  ãƒ†ã‚¯ã‚¹ãƒ�ãƒ£ç”¨ãƒ¡ãƒ¢ãƒªã�®ç¢ºä¿�
 		if( offscreenTexture > 0 )
 		{
 			releaseFrameBuffer(gl);
 		}
-        int[] buffers = new int[1];//  テクスチャ管理IDの配列
+        int[] buffers = new int[1];//  ãƒ†ã‚¯ã‚¹ãƒ�ãƒ£ç®¡ç�†IDã�®é…�åˆ—
 
-        gl.glGenTextures(1, buffers, 0);//  1枚分のメモリを確保
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, buffers[0]);//  1枚目を使う指定
+        gl.glGenTextures(1, buffers, 0);//  1æžšåˆ†ã�®ãƒ¡ãƒ¢ãƒªã‚’ç¢ºä¿�
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, buffers[0]);//  1æžšç›®ã‚’ä½¿ã�†æŒ‡å®š
 
         offscreenTexture = buffers[0];
 
@@ -90,10 +90,8 @@ public class OffscreenImage {
         GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
         bitmap.recycle();
 
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);//  縮小時のフィルタ
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_NEAREST);//  拡大時のフィルタ
-
-
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);//  ç¸®å°�æ™‚ã�®ãƒ•ã‚£ãƒ«ã‚¿
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_NEAREST);//  æ‹¡å¤§æ™‚ã�®ãƒ•ã‚£ãƒ«ã‚¿
 
 		GL11ExtensionPack gl11ep = (GL11ExtensionPack) gl;
 
@@ -165,7 +163,7 @@ public class OffscreenImage {
 
 
 	/*
-	 * オフスクリーンのバッファを描画する。
+	 * ã‚ªãƒ•ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã�®ãƒ�ãƒƒãƒ•ã‚¡ã‚’æ��ç”»ã�™ã‚‹ã€‚
 	 * @param gl
 	 * @param opacity
 	 */

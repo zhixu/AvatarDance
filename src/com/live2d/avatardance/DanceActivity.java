@@ -26,7 +26,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
@@ -80,6 +82,7 @@ public class DanceActivity extends Activity  {
 	private float currentSongBPM = -1;
 	
 	private Camera camera;
+	CameraView cameraView;
 	
 	private LAppLive2DManager live2DMgr ;
 	private LAppView view;
@@ -109,7 +112,7 @@ public class DanceActivity extends Activity  {
       	DisplayMetrics metrics = this.getApplicationContext().getResources().getDisplayMetrics();
       	FileManager.init(this.getApplicationContext(), metrics.widthPixels, metrics.heightPixels);
       	
-      	view.getHolder().setFormat( PixelFormat.TRANSLUCENT );
+      	//view.getHolder().setFormat( PixelFormat.TRANSLUCENT );
 
     }
 	
@@ -198,15 +201,18 @@ public class DanceActivity extends Activity  {
 		}
 		
 	}
-	
+
 	void setupGUIAvatar() {
+		Log.d("CameraView", "setupGUIAvatar");
 		setContentView(R.layout.activity_avatar);
 		
 		view = live2DMgr.createView(this) ;
+		setupCamera();
 		
 		FrameLayout layout=(FrameLayout) findViewById(R.id.live2DLayout);
-		layout.addView(view, 0, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		findViewById(R.id.layout_avatar).bringToFront();
+		//layout.addView(view, 0, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		layout.addView(cameraView);
+		//findViewById(R.id.layout_avatar).bringToFront();
 		
 		buttonAbout = (Button) findViewById(R.id.button_about);
 		ButtonAboutListener buttonAboutListener = new ButtonAboutListener();
@@ -250,6 +256,7 @@ public class DanceActivity extends Activity  {
 
         FrameLayout layout=(FrameLayout) findViewById(R.id.live2DLayout2);
 		layout.addView(view, 0, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		layout.addView(cameraView);
 		findViewById(R.id.controls).bringToFront();
 		
 		buttonPlay = (ImageButton) findViewById(R.id.button_play);
@@ -397,9 +404,7 @@ public class DanceActivity extends Activity  {
 				}
 				setNewSong(currentSongIndex);	
 			}
-			
 		}
-		
 	}
 	
 	class ButtonBGListener implements OnClickListener {
@@ -608,6 +613,34 @@ public class DanceActivity extends Activity  {
 		}
 	}
 	
+	private Camera getCameraInstance() {
+		Camera c = null;
+		try {
+			c = Camera.open();
+		} catch (Exception e) {
+			
+		}
+		return c;
+	}
+	
+	void setupCamera() {
+		
+		Log.d("CameraView", "setting up camera");
+		
+		camera = getCameraInstance();
+		cameraView = new CameraView(this.getApplicationContext(), camera);
+	}
+	
+	void closeCamera() {
+		
+		if (camera != null) {
+			camera.stopPreview();
+			
+			camera.release();
+			camera = null;
+		}
+		
+	}
 	
 	/*
 	 * Activityを再開したときのイベント。
@@ -615,11 +648,12 @@ public class DanceActivity extends Activity  {
 	@Override
 	protected void onResume()
 	{
-		//initializeCamera();
-		//cameraActivity.setCamera(camera);
-		//live2DMgr.onResume() ;
+		Log.d("CameraView", "onresume called");
+		if (camera != null) {
+			setupCamera();
+		}
+		live2DMgr.onResume() ;
 		super.onResume();
-		
 	}
 
 	/*
@@ -628,19 +662,22 @@ public class DanceActivity extends Activity  {
 	@Override
 	protected void onPause()
 	{
-		
-		//closeCamera();
+		super.onPause();
+		closeCamera();
 		//unregisterReceiver(mReceiver);
 		live2DMgr.onPause() ;
-    	super.onPause();
 	}
 
 	protected void onStop() {
+		
 		super.onStop();
+		closeCamera();
 	}
 
 	protected void onDestroy() {
 		super.onDestroy();
+		
+		closeCamera();
 		if (mp != null) {
 			mp.release();
 		}

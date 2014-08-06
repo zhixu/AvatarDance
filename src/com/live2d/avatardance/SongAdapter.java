@@ -11,7 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 public class SongAdapter extends ArrayAdapter<SongItem> {
-    Context context;
+    
+	Context context;
     int layoutResourceId;
     SongItem[] songs = null;
 

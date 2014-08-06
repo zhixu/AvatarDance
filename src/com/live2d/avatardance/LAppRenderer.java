@@ -52,12 +52,11 @@ public class LAppRenderer implements GLSurfaceView.Renderer {
 	public void onSurfaceCreated(GL10 context, EGLConfig arg1) {
 		// 背景の作成
 		
-		setupBackground(context);
+		//setupBackground(context);
 		delegate.loadModel(context);
 	}
 	
 	public void setBackground(Uri path) {
-		Log.d("DANCE ACTIVITY", "setting background");
 		
 		isUpdateBG = true;
 		isAsset = false;
